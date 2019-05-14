@@ -22,6 +22,8 @@ def publish(cou):
 
     task.insert(dict)
 
+    print time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ': insert task ' + str(cou)
+
 
 if __name__ == '__main__':
     publish(3)
