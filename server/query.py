@@ -88,6 +88,10 @@ def register(request):
         re = account.insert_one(dic)
         if re.inserted_id == None:
             return False
+        else:
+            wallet = conn.db['wallet']
+            w_dic = {'phone': re['phone'], 'un_take': 19.0, 'has_take': 0.0, 'update_time': int(time.time())}
+            wallet.insert_one(w_dic)
     else:
         if re['account_status'] != 0:
             # 判断是否被封号
