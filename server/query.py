@@ -84,9 +84,11 @@ def register(request):
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone'])})
     if re == None:
+        # 最后统一为 re 付值
+        re = dic
         # 未注册过
-        re = account.insert_one(dic)
-        if re.inserted_id == None:
+        ire = account.insert_one(dic)
+        if ire.inserted_id == None:
             return False
         else:
             wallet = conn.db['wallet']
@@ -205,8 +207,8 @@ def update_account(req):
         dic['role'] = data['role']
     if data.has_key('account_status'):
         dic['account_status'] = data['account_status']
-    if data.has_key('alipay'):
-        dic['alipay'] = data['alipay']
+    if data.has_key('card'):
+        dic['card'] = data['card']
 
     re = account.update_one({'phone': phone}, {'$set': dic})
     return re != None

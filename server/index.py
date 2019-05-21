@@ -3,9 +3,12 @@
 from flask import Flask, Response, request
 import query
 import json
+from admin import admin_api
 
 
 app = Flask(__name__)
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?R/LJDHCS/,/s'
+app.register_blueprint(admin_api)
 
 @app.route('/')
 def index():
@@ -84,8 +87,12 @@ def update_account():
         return __response(json.dumps({'success': query.update_account(request)}))
     return __response(json.dumps({'success': False}))
 
+
+
 def __response(json):
     return Response(json, mimetype='application/json')
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
