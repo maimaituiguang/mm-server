@@ -79,7 +79,9 @@ def account(request):
 
 def register(request):
     data = json.loads(request.get_data())
-    dic = {'phone': int(data['phone']), 'nick': data['nick'], 'task_status': 0, 'account_status': 0, 'role': 0}
+    dic = {'phone': int(data['phone']), 'task_status': 0, 'account_status': 0, 'role': 0}
+    if data.has_key('nick'):
+        dic['nick'] = data['nick']
 
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone'])})
@@ -100,7 +102,8 @@ def register(request):
             return False
 
         # 更新账号数据
-        account.update_one({'phone': re['phone']}, {'$set': {'nick': data['nick']}})
+        if dic.has_key('nick'):
+            account.update_one({'phone': re['phone']}, {'$set': {'nick': data['nick']}})
 
     vip = conn.db['member'].find_one({'type': re['role']})
     re['role_name'] = vip['name']
