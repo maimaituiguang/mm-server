@@ -104,6 +104,8 @@ def register(request):
         # 更新账号数据
         if dic.has_key('nick'):
             account.update_one({'phone': re['phone']}, {'$set': {'nick': data['nick']}})
+        else:
+            return False
 
     vip = conn.db['member'].find_one({'type': re['role']})
     re['role_name'] = vip['name']
