@@ -80,14 +80,17 @@ def account(request):
 def register(request):
     data = json.loads(request.get_data())
     dic = {'phone': int(data['phone']), 'task_status': 0, 'account_status': 0, 'role': 0}
-    if data.has_key('nick'):
-        dic['nick'] = data['nick']
 
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone'])})
     if re == None:
         # 最后统一为 re 付值
         re = dic
+        if data.has_key('nick'):
+            re['nick'] = data['nick']
+        else:
+            re['nick'] = '注册用户'
+
         # 未注册过
         ire = account.insert_one(dic)
         if ire.inserted_id == None:
@@ -102,10 +105,8 @@ def register(request):
             return False
 
         # 更新账号数据
-        if dic.has_key('nick'):
+        if data.has_key('nick'):
             account.update_one({'phone': re['phone']}, {'$set': {'nick': data['nick']}})
-        else:
-            return False
 
     vip = conn.db['member'].find_one({'type': re['role']})
     re['role_name'] = vip['name']
