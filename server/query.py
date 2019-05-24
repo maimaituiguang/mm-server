@@ -190,9 +190,10 @@ def view_task(req, status):
         rewards[str(t['task_id'])] = t['reward']
 
     task = conn.db['task']
-    ref = task.find({'_id': {'$in': taskIds}}, {'_id': 0})
+    ref = task.find({'_id': {'$in': taskIds}})
     for item in ref:
-        item['reward'] = rewards[str(item['_id'])]
+        item['_id'] = str(item['_id'])
+        item['reward'] = rewards[item['_id']]
 
     return json.dumps(list(ref))
 
