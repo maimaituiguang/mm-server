@@ -17,13 +17,13 @@
         <td>{[item.phone]}</td>
         <td>{[item.reward]}</td>
         <td>
-          <button type="button" class="btn btn-primary" data-loading-text="更新中...">通过</button>
-          <button type="button" class="btn btn-danger" data-loading-text="更新中...">不通过</button>
+          <button :id="item._id+'-1'" type="button" class="btn btn-primary" data-loading-text="更新中..." @click="check(item, 1)">通过</button>
+          <button id="item._id+'-2'" type="button" class="btn btn-danger" data-loading-text="更新中..." @click="check(item, 2)">不通过</button>
         </td>
       </tr>
     </tbody>
   </table>
-  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore">加载更多</button>
+  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore" style="margin-bottom: 100px;">加载更多</button>
 </div>
 <script>
   new Vue({
@@ -51,6 +51,25 @@
           self.lists.push(...res.data)
           if (res.data.length == 0) {
             alert('没有更多了')
+          }
+        })
+      },
+
+      check(item, status) {
+        console.log('#'+item._id+'-'+status)
+        const btn = $('#'+item._id+'-'+status).button('loading')
+        const self = this
+        axios.post('/task-pass', {
+          phone: item.phone,
+          status: status,
+          _id: item._id,
+          reward: item.reward
+        }).then(function (res) {
+          btn.button('reset')
+          if (res.data.success == '1') {
+            self.lists = self.lists.filter(obj => obj._id != item._id)
+          } else {
+            alert(re.data.info)
           }
         })
       }

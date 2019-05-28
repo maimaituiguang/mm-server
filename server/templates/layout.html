@@ -1,10 +1,11 @@
 {%- extends "wrapper.html" %}
 {% block body %}
-<div style="background-color: #303030; padding: 20px; padding-left: 215px;">
-  <strong style="color: #fff; font-size: 15px;">麦麦推广后台管理系统</strong>
+<div class="container-fluid" style="background-color: #303030;">
+  <div class="container" style="padding-top: 20px; padding-bottom: 20px;">
+    <div class="col-xs-12 col-sm-6 col-md-8"><strong style="color: #fff; font-size: 15px;">麦麦推广后台管理系统</strong></div>
+  </div>
 </div>
-<div style="margin-top: 20px; min-width: 500px; margin-left: 200px; margin-right: 200px;" 
-     class="row">
+<div class="container" style="margin-top: 20px; ">
   <div class="col-xs-5 col-md-3 menus">
     <div class="list-group">
       <a href="/" class="list-group-item {%if page == 'board' %} active {%-endif %}">财务看板</a>
@@ -14,7 +15,7 @@
     </div>
   </div>
   <div class="col-xs-12 col-sm-6 col-md-8">
-      {% block container %}{% endblock %}
+    {% block container %}{% endblock %}
   </div>
 </div>
 {% endblock %}

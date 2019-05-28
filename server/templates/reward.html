@@ -1,5 +1,71 @@
 {%- extends "layout.html" %}
 {%- set page = 'reward' %}
 {% block container %}
-<div>test</div>
+<div id="reward">
+  <table class="table table-bordered" style="border-radius: 5px;">
+    <thead><tr class="info"><th>手机号</th><th>提现金额</th><th>总收益</th><th>银行卡</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr v-for="item in lists">
+        <td>{[item.phone]}</td>
+        <td>{[item.count]}</td>
+        <td>{[item.totals]}</td>
+        <td>
+          卡号：{[item.card.number]}<br />
+          银行：{[item.card.bank]}</br />
+          姓名：{[item.card.userName]}
+        </td>
+        <td>
+          <button :id="item._id" type="button" class="btn btn-primary" data-loading-text="更新中..." @click="take(item)">完成提现</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore" style="margin-bottom: 100px;">加载更多</button>
+</div>
+<script>
+  new Vue({
+    delimiters:['{[', ']}'],
+    el: '#reward',
+    data: {
+      lists: []
+    },
+    created () {
+      this.fetch()
+    },
+    methods: {
+      fetch(offset=0) {
+        const self = this
+        axios.get('/all-take/'+offset).then(function (res) {
+          console.log(res.data)
+          self.lists = res.data
+        })
+      },
+
+      loadMore() {
+        const self = this
+        const btn = $('#loadMore').button('loading')
+        axios.get('/all-take/'+this.lists.length).then(function (res) {
+          btn.button('reset')
+          self.lists.push(...res.data)
+          if (res.data.length == 0) {
+            alert('没有更多了')
+          }
+        })
+      },
+
+      take(item) {
+        const btn = $('#'+item._id).button('loading')
+        const self = this
+        axios.get('/take-finished/'+item._id+'/1').then(function (res) {
+          btn.button('reset')
+          if (res.data.success == '1') {
+            self.lists = self.lists.filter(obj => obj._id != item._id)
+          } else {
+            alert(re.data.info)
+          }
+        })
+      }
+    }
+  })
+</script>
 {% endblock %}

@@ -76,7 +76,17 @@ def update_status(task_status=None, phone=None):
 def all_task(offset):
     return __response(adminQuery.all_task(offset))
 
+@admin_api.route('/task-pass', methods=['POST'])
+def task_pass():
+    return __response(adminQuery.task_pass(request))
 
+@admin_api.route('/all-take/<int:offset>')
+def all_take(offset):
+    return __response(adminQuery.all_take(offset))
+
+@admin_api.route('/take-finished/<string:_id>/<int:status>')
+def take_finished(_id, status):
+    return __response(adminQuery.take_finished(_id, status))
 
 
 def __response(json):

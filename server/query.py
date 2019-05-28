@@ -136,9 +136,15 @@ def take(request):
     phone = __parsePhone(__zc_0(request))
     data = json.loads(request.get_data())
 
+    account = conn.db['account']
+    acc = account.find_one({'phone': phone})
+
     take = conn.db['take_record']
     count = float(data['count'])
     dic = {'phone': phone, 'count': count, 'status': 0, 'create_time': int(time.time())}
+    if acc.has_key('card'):
+        dic['card'] = acc['card']
+    
     re = take.insert_one(dic)
 
     wallet = conn.db['wallet']
