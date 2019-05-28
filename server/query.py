@@ -57,14 +57,19 @@ def submit_task(request):
     dic['phone'] = phone
     dic['status'] = 0
     dic['create_time'] = int(time.time())
+    try:
+        task = conn.db['task']
+        info = task.find_one({'_id': dic['task_id']})
+        dic['detail'] = info['detail']
 
-    finished_task = conn.db['finished_task']
-    re = finished_task.insert_one(dic)
-    if re.inserted_id != None:
-        return True
+        finished_task = conn.db['finished_task']
+        re = finished_task.insert_one(dic)
+        if re.inserted_id != None:
+            return True
+    except:
+        return False
 
     return False
-
 
 def account(request):
     phone = __parsePhone(__zc_0(request))

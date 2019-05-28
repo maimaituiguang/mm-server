@@ -1,0 +1,20 @@
+{%- extends "wrapper.html" %}
+{% block body %}
+<div style="background-color: #303030; padding: 20px; padding-left: 215px;">
+  <strong style="color: #fff; font-size: 15px;">麦麦推广后台管理系统</strong>
+</div>
+<div style="margin-top: 20px; min-width: 500px; margin-left: 200px; margin-right: 200px;" 
+     class="row">
+  <div class="col-xs-5 col-md-3 menus">
+    <div class="list-group">
+      <a href="/" class="list-group-item {%if page == 'board' %} active {%-endif %}">财务看板</a>
+      <a href="/home" class="list-group-item {%if page == 'home' %} active {%-endif %}">账户管理</a>
+      <a href="/check-task" class="list-group-item {%if page == 'task' %} active {%-endif %}">任务审核</a>
+      <a href="/check-reward" class="list-group-item {%if page == 'reward' %} active {%-endif %}">提现申请</a>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-8">
+      {% block container %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

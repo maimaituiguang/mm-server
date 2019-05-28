@@ -1,0 +1,60 @@
+{%- extends "layout.html" %}
+{%- set page = 'task' %}
+{% block container %}
+<div id="task">
+  <table class="table table-bordered" style="border-radius: 5px;">
+    <thead><tr class="info"><th>任务</th><th>任务内容</th><th>手机号</th><th>佣金</th><th>操作</th></tr></thead>
+    <tbody>
+      <tr v-for="item in lists">
+        <td class="colum-td">
+          <img v-bind:src="item.detail.icon" style="width: 40px; height: 40px; border-radius: 4px;" />
+          <span>{[item.detail.appName]}</span>
+        </td>
+        <td>
+          <span>账号：{[item.app_number]}</span><br />
+          <span>昵称：{[item.app_password]}</span>
+          </td>
+        <td>{[item.phone]}</td>
+        <td>{[item.reward]}</td>
+        <td>
+          <button type="button" class="btn btn-primary" data-loading-text="更新中...">通过</button>
+          <button type="button" class="btn btn-danger" data-loading-text="更新中...">不通过</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore">加载更多</button>
+</div>
+<script>
+  new Vue({
+    delimiters:['{[', ']}'],
+    el: '#task',
+    data: {
+      lists: []
+    },
+    created () {
+      this.fetch()
+    },
+    methods: {
+      fetch(offset=0) {
+        const self = this
+        axios.get('/all-task/'+offset).then(function (res) {
+          self.lists = res.data
+        })
+      },
+
+      loadMore() {
+        const self = this
+        const btn = $('#loadMore').button('loading')
+        axios.get('/all-task/'+this.lists.length).then(function (res) {
+          btn.button('reset')
+          self.lists.push(...res.data)
+          if (res.data.length == 0) {
+            alert('没有更多了')
+          }
+        })
+      }
+    }
+  })
+</script>
+{% endblock %}

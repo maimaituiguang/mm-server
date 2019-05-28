@@ -1,6 +1,96 @@
-{%- extends "wrapper.html" %}
-{% block body %}
-<div>
-    success
+{%- extends "layout.html" %}
+{%- set page = 'home' %}
+{% block container %}
+<div id="home">
+    <div class="input-group col-lg-6" style="margin-bottom: 20px;">
+        <input id="search-input" type="text" class="form-control" placeholder="输入用户手机号" >
+        <span class="input-group-btn">
+            <button class="btn btn-primary home-search" type="button" @click="search" data-loading-text="登录中...">搜索用户</button>
+        </span>
+    </div>
+    <table class="table table-bordered" style="border-radius: 5px;">
+        <thead><tr class="info"><th>用户名</th><th>手机号</th><th>角色</th><th>操作</th></tr></thead>
+        <tbody>
+           <tr v-for="item in lists">
+               <td>{[item.nick]}</td>
+               <td>{[item.phone]}</td>
+               <td>{[item.member.name]}</td>
+               <td>
+                    <button id="task" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button>
+                    <div class="btn-group" role="group">
+                        <button id="member" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        升级会员
+                        <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li v-for="m in members"  @click="selectedMember(m.type)"><a href="#">{[m.name]}</a></li>
+                        </ul>
+                    </div>
+               </td>
+           </tr>
+        </tbody>
+    </table>
 </div>
+<script>
+new Vue({
+    delimiters:['{[', ']}'],
+    el: '#home',
+    data: {
+        lists: [],
+        members: []
+    },
+    created () {
+        const self = this
+        axios.get('/members').then(function (res) {
+            self.members = res.data
+        })
+
+        // this.search()
+    },
+    methods: {
+        search () {
+            const phone = $('#search-input').val()
+            if (phone.length == 0) {
+                return
+            }
+
+            const btn = $('.home-search').button('loading')
+            const self = this
+            axios.get('/search-user/'+phone).then(function (res) {
+                btn.button('reset')
+                self.lists = res.data
+            })
+        },
+
+        selectedMember(type) {
+            const phone = $('#search-input').val()
+            const btn = $('#member').button('loading')
+            const self = this
+            axios.get('/update-role/'+type+'/'+phone).then(function (res) {
+                btn.button('reset')
+                self.lists = res.data
+            })
+        },
+
+        task(item) {
+            const phone = $('#search-input').val()
+            const btn = $('#task').button('loading')
+            const self = this
+            status = parseInt(item.task_status) ? 0 : 1
+            console.log(item.task_status)
+            axios.get('/update-status/'+status+'/'+phone).then(function (res) {
+                self.lists = []
+                if (res.data.success == '1') {
+                    setTimeout(() => {
+                        item.task_status = status
+                        self.lists.push(item)
+                    }, 1);
+                } else {
+                    alert('更新失败')
+                }
+            })
+        }
+    }
+})
+</script>
 {% endblock %}

@@ -19,7 +19,7 @@ def login():
     ck = request.cookies.get('username')
     if ck:
         session['username'] = ck
-        return redirect(url_for('admin_api.home'))
+        return redirect(url_for('admin_api.index'))
 
     if request.method == 'POST':
         data = json.loads(request.get_data())
@@ -35,12 +35,51 @@ def login():
 
     return render_template('login.html')
 
+@admin_api.route('/')
+@admin_api.route('/index')
+def index():
+    return render_template('board.html')
 
-@admin_api.route('/home', methods=['GET'])
+@admin_api.route('/home')
 def home():
     return render_template('home.html')
+
+@admin_api.route('/check-task')
+def check_task():
+    return render_template('task.html')
+
+@admin_api.route('/check-reward')
+def check_reward():
+    return render_template('reward.html')
+
+
+
+
+
+
+
+
+
+@admin_api.route('/search-user/<string:phone>')
+def search(phone):
+    return __response(adminQuery.search(phone))
+
+@admin_api.route('/update-role/<int:role>/<string:phone>')
+def update_role(role=None, phone=None):
+    return __response(adminQuery.update_role(role, phone))
+
+@admin_api.route('/update-status/<int:task_status>/<string:phone>')
+def update_status(task_status=None, phone=None):
+    return __response(adminQuery.update_status(task_status, phone))
+
+@admin_api.route('/all-task/<int:offset>')
+def all_task(offset):
+    return __response(adminQuery.all_task(offset))
+
 
 
 
 def __response(json):
     return Response(json, mimetype='application/json')
+
+

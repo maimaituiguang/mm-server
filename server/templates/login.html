@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="button" class="btn btn-primary" @click="login">登录</button>
+        <button id="login" type="button" class="btn btn-primary" data-loading-text="登录中..." @click="login" autocomplete="off">登录</button>
       </div>
     </div>
   </form>
@@ -31,15 +31,16 @@
         if (phone.length < 10 || psd.length < 5) {
           return
         }
-
+        const btn = $('#login').button('loading')
         axios.post('/login', {
           phone: phone,
           password: psd
         }).then(function (res) {
+          btn.button('reset')
           if (res.data.success == '1') {
             location.href = '/home'
           } else {
-            alert(res.data.info)
+            alert(re.data.info)
           }
         })
       }

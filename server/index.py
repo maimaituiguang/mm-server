@@ -10,10 +10,6 @@ app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?R/LJDHCS/,/s'
 app.register_blueprint(admin_api)
 
-@app.route('/')
-def index():
-    return 'success'
-
 @app.route('/account')
 def account():
     re = query.account(request)
