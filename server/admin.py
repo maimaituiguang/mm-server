@@ -72,9 +72,9 @@ def update_role(role=None, phone=None):
 def update_status(task_status=None, phone=None):
     return __response(adminQuery.update_status(task_status, phone))
 
-@admin_api.route('/all-task/<int:offset>')
-def all_task(offset):
-    return __response(adminQuery.all_task(offset))
+@admin_api.route('/finished-task/<int:offset>')
+def finished_task(offset):
+    return __response(adminQuery.finished_task(offset))
 
 @admin_api.route('/task-pass', methods=['POST'])
 def task_pass():

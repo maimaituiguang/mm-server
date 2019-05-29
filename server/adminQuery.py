@@ -31,6 +31,13 @@ def update_role(role, phone):
     try:
         account = conn.db['account']
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
+
+        # umr = conn.db['user_member_record']
+        # member = conn.db['member']
+
+        # mre = member.find()
+        # umr_re = umr.find({'phone': int(phone)})
+
         return search(phone)
     except:
         return json.dumps([])
@@ -43,7 +50,7 @@ def update_status(task_status, phone):
     except:
         return json.dumps({'success': False})
 
-def all_task(offset=0):
+def finished_task(offset=0):
     try:
         task = conn.db['finished_task']
         re = task.find({'status': 0}, {'task_id': 0}).limit(10).skip(offset).sort('create_time', -1)

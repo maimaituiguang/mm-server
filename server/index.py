@@ -88,8 +88,6 @@ def update_account():
 def __response(json):
     return Response(json, mimetype='application/json')
 
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
 

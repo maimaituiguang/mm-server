@@ -3,7 +3,7 @@
 {% block container %}
 <div id="task">
   <table class="table table-bordered" style="border-radius: 5px;">
-    <thead><tr class="info"><th>任务</th><th>任务内容</th><th>手机号</th><th>佣金</th><th>操作</th></tr></thead>
+    <thead><tr class="active"><th>任务</th><th>任务内容</th><th>手机号</th><th>佣金</th><th>操作</th></tr></thead>
     <tbody>
       <tr v-for="item in lists">
         <td class="colum-td">
@@ -38,7 +38,7 @@
     methods: {
       fetch(offset=0) {
         const self = this
-        axios.get('/all-task/'+offset).then(function (res) {
+        axios.get('/finished-task/'+offset).then(function (res) {
           self.lists = res.data
         })
       },
@@ -46,7 +46,7 @@
       loadMore() {
         const self = this
         const btn = $('#loadMore').button('loading')
-        axios.get('/all-task/'+this.lists.length).then(function (res) {
+        axios.get('/finished-task/'+this.lists.length).then(function (res) {
           btn.button('reset')
           self.lists.push(...res.data)
           if (res.data.length == 0) {

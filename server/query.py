@@ -13,6 +13,9 @@ def apps(offset):
 
 def task(request):
     phone = __parsePhone(__zc_0(request))
+    account = conn.db['account'].find_one({'phone': int(phone)})
+    if account['task_status'] == 1:
+        return json.dumps({'message': '警告：由于您提交虚假任务被系统识别，已停止您的任务权限，如有疑问请联系客服～'})
 
     task = conn.db['task']
     finished = conn.db['finished_task']
@@ -236,12 +239,6 @@ def update_account(req):
 
     re = account.update_one({'phone': phone}, {'$set': dic})
     return re != None
-
-
-
-
-
-
 
 
 
