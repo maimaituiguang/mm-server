@@ -19,7 +19,7 @@ def login():
     ck = request.cookies.get('username')
     if ck:
         session['username'] = ck
-        return redirect(url_for('admin_api.index'))
+        return redirect(url_for('admin_api.home'))
 
     if request.method == 'POST':
         data = json.loads(request.get_data())
@@ -35,11 +35,12 @@ def login():
 
     return render_template('login.html')
 
-@admin_api.route('/')
-@admin_api.route('/index')
-def index():
-    return render_template('board.html')
+# @admin_api.route('/')
+# @admin_api.route('/index')
+# def index():
+#     return render_template('board.html')
 
+@admin_api.route('/')
 @admin_api.route('/home')
 def home():
     return render_template('home.html')

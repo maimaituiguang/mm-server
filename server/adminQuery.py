@@ -31,13 +31,6 @@ def update_role(role, phone):
     try:
         account = conn.db['account']
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
-
-        # umr = conn.db['user_member_record']
-        # member = conn.db['member']
-
-        # mre = member.find()
-        # umr_re = umr.find({'phone': int(phone)})
-
         return search(phone)
     except:
         return json.dumps([])
