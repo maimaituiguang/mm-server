@@ -1,8 +1,7 @@
 # -*- coding: UTF-8 -*-
 
-import conn
-import json
-import time
+import conn, common
+import time, json
 from bson import ObjectId
 
 def apps(offset):
@@ -36,7 +35,7 @@ def task(request):
             if one['task_id'] == t['_id']:
                 have = True
                 break
-        if have == False:
+        if have is False:
             t['_id'] = str(t['_id'])
             t['status'] = 1 # 进行中的任务
             re.append(t)
@@ -67,7 +66,7 @@ def submit_task(request):
 
         finished_task = conn.db['finished_task']
         re = finished_task.insert_one(dic)
-        if re.inserted_id != None:
+        if re.inserted_id is not None:
             return True
     except:
         return False
@@ -91,7 +90,7 @@ def register(request):
 
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone'])})
-    if re == None:
+    if re is None:
         # 最后统一为 re 付值
         re = dic
         if data.has_key('nick'):
@@ -99,11 +98,15 @@ def register(request):
         else:
             re['nick'] = '注册用户'
 
+        if data.has_key('password'):
+            re['password'] = common.md5(data['password'])
+
         # 未注册过
         ire = account.insert_one(dic)
-        if ire.inserted_id == None:
+        if ire.inserted_id is None:
             return False
         else:
+            # 新用户送 19 元
             wallet = conn.db['wallet']
             w_dic = {'phone': re['phone'], 'un_take': 19.0, 'has_take': 0.0, 'update_time': int(time.time())}
             wallet.insert_one(w_dic)
@@ -113,15 +116,42 @@ def register(request):
             return False
 
         # 更新账号数据
+        update_data = {'nick': re['nick']}
         if data.has_key('nick'):
-            account.update_one({'phone': re['phone']}, {'$set': {'nick': data['nick']}})
+            update_data['nick'] = data['nick']
+        if data.has_key('password'):
+            update_data['password'] = common.md5(data['password'])
+
+        account.update_one({'phone': re['phone']}, {'$set': update_data})
 
     vip = conn.db['member'].find_one({'type': re['role']})
+    if vip is None:
+        return False
+
     re['role_name'] = vip['name']
     re['reward'] = vip['reward']
     re['_id'] = str(re['_id'])
 
     return re
+
+
+def login(request):
+    data = json.loads(request.get_data())
+
+    account = conn.db['account']
+    re = account.find_one({'phone': int(data['phone']), 'password': common.md5(data['password'])})
+    if re is None or re['account_status'] != 0:
+        return False
+
+    vip = conn.db['member'].find_one({'type': re['role']})
+    if vip is None:
+        return False
+
+    re['role_name'] = vip['name']
+    re['reward'] = vip['reward']
+    re['_id'] = str(re['_id'])
+    return re
+
 
 
 def wallet(request):
