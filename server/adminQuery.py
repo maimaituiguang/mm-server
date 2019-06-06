@@ -1,17 +1,15 @@
 # -*- coding: UTF-8 -*-
 
-import conn
-import json, time, hashlib
+import conn, common
+import json, time
 from bson import ObjectId
 
 
 def verify_user(phone, password):
-    m2 = hashlib.md5()
-    m2.update(password.encode('utf-8'))
     account = conn.db['account']
     try:
         re = account.find_one({'phone': int(phone)})
-        return re != None and re.has_key('password') and re['password'] == m2.hexdigest()  
+        return re is not None and re.has_key('password') and re['password'] == common.md5(password) and re.has_key('super_member') and re['super_member'] == 1
     except:
         return False
 
@@ -21,7 +19,7 @@ def search(phone):
         member = conn.db['member']
         re = account.find_one({'phone': int(phone)}, {'_id': 0})
         mre = member.find_one({'type': re['role']}, {'_id': 0})
-        if re != None and mre != None:
+        if re is not None and mre is not None:
             re['member'] = dict(mre)
             return json.dumps([dict(re)])
     except:
@@ -104,7 +102,3 @@ def take_finished(_id, status):
         return json.dumps({'success': True})
     
     return json.dumps({'success': False, 'info': '更新失败，请重试'})
-
-
-    
-        
