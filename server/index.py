@@ -28,6 +28,15 @@ def register():
 
     return __response(json.dumps({'success': False}))
 
+@app.route('/client-login', members=['POST'])
+def client_login():
+    if request.method == 'POST':
+        re = query.client_login(request)
+        if isinstance(re, dict):
+            return __response(json.dumps({'success': True, 'data': re}))
+
+    return __response(json.dumps({'success': False}))
+
 @app.route('/apps/<int:offset>')
 def apps(offset):
     return __response(query.apps(offset))
