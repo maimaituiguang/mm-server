@@ -135,7 +135,7 @@ def register(request):
     return re
 
 
-def login(request):
+def client_login(request):
     data = json.loads(request.get_data())
 
     account = conn.db['account']
