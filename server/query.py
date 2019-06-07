@@ -45,7 +45,7 @@ def task(request):
 
 def all_task(offset):
     task = conn.db['task']
-    re = task.find({}, {'_id': 0}).limit(10).skip(offset)
+    re = task.find({'end_time': {'$lt': int(time.time())}}, {'_id': 0}).limit(10).skip(offset).sort('end_time', -1)
     list = []
     for item in re:
         item['status'] = 0

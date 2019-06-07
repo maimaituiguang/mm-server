@@ -28,7 +28,7 @@ def register():
 
     return __response(json.dumps({'success': False}))
 
-@app.route('/client-login', members=['POST'])
+@app.route('/client-login', methods=['POST'])
 def client_login():
     if request.method == 'POST':
         re = query.client_login(request)
