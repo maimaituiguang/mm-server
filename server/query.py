@@ -91,6 +91,7 @@ def register(request):
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone'])})
     if re is None:
+        # 未注册用户
         # 最后统一为 re 付值
         re = dic
         if data.has_key('nick'):
@@ -101,7 +102,12 @@ def register(request):
         if data.has_key('password'):
             re['password'] = common.md5(data['password'])
 
-        # 未注册过
+        if data.has_key('yaoCode'):
+            re['yao_code'] = data['yaoCode']
+
+        if data.has_key('userID'):
+            re['user_id'] = data['userID']
+
         ire = account.insert_one(dic)
         if ire.inserted_id is None:
             return False
