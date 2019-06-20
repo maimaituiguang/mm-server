@@ -17,6 +17,16 @@ def task(request):
     if account['task_status'] == 1:
         return json.dumps({'message': '警告：由于您提交虚假任务被系统识别，已停止您的任务权限，如有疑问请联系客服～'})
 
+    # 当前的请求来源 android/iOS
+    agent = request.headers['User-Agent']
+    platform = 'android'
+    pre_url = 'https://www.qimai.cn/andapp/baseinfo/appid/'
+    if 'iPhone' in agent:
+        platform = 'iOS'
+        pre_url = 'https://www.qimai.cn/app/baseinfo/appid/'
+
+
+
     task = conn.db['task']
     finished = conn.db['finished_task']
 
@@ -36,9 +46,10 @@ def task(request):
             if one['task_id'] == t['_id']:
                 have = True
                 break
-        if have is False:
+        if have is False and t['platfom'] is platform:
             t['_id'] = str(t['_id'])
-            t['status'] = 1 # 进行中的任务
+            t['status'] = 1 # 进行中的任务, 用于不同 cell 状态的展示
+            t['pageUrl'] = pre_url + t['appId']
             re.append(t)
 
     return json.dumps(re)
