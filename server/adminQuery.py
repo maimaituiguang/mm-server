@@ -14,10 +14,11 @@ def verify_user(phone, password):
         return False
 
 def search(phone):
+    # phone 参数的值表示的是 userID
     try:
         account = conn.db['account']
         member = conn.db['member']
-        re = account.find_one({'phone': int(phone)}, {'_id': 0})
+        re = account.find_one({'user_id': phone}, {'_id': 0})
         mre = member.find_one({'type': re['role']}, {'_id': 0})
         if re is not None and mre is not None:
             re['member'] = dict(mre)
