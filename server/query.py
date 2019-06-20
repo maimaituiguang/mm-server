@@ -10,6 +10,7 @@ def apps(offset):
     return json.dumps(list(re))
 
 
+# 同时支持 iOS / Android 的不同数据
 def task(request):
     phone = __parsePhone(__zc_0(request))
     account = conn.db['account'].find_one({'phone': int(phone)})
