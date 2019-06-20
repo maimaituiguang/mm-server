@@ -46,7 +46,7 @@ def task(request):
             if one['task_id'] == t['_id']:
                 have = True
                 break
-        if have is False and t['platfom'] is platform:
+        if have is False and t['platform'] is platform:
             t['_id'] = str(t['_id'])
             t['status'] = 1 # 进行中的任务, 用于不同 cell 状态的展示
             t['pageUrl'] = pre_url + t['appId']
