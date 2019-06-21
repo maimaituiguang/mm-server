@@ -48,14 +48,13 @@ def task(request):
                 break
         if have is True:
             continue
-
+        detail = t['detail']
         t['_id'] = str(t['_id'])
         t['status'] = 1  # 进行中的任务, 用于不同 cell 状态的展示
-        t['pageUrl'] = pre_url + str(t['detail']['appId'])
-        if t['detail'].has_key('platform'):
-            if t['detail']['platform'] is platform:
+        t['pageUrl'] = pre_url + str(detail['appId'])
+        if detail.has_key('platform'):
+            if detail['platform'] == platform:
                 re.append(t)
-            continue
         else:
             re.append(t)
 
