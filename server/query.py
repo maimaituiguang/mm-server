@@ -51,7 +51,7 @@ def task(request):
 
         t['_id'] = str(t['_id'])
         t['status'] = 1  # 进行中的任务, 用于不同 cell 状态的展示
-        t['pageUrl'] = pre_url + t['detail']['appId']
+        t['pageUrl'] = pre_url + str(t['detail']['appId'])
         if t.has_key('platform'):
             if t['platform'] is platform:
                 re.append(t)
