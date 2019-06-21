@@ -25,8 +25,6 @@ def task(request):
         platform = 'iOS'
         pre_url = 'https://www.qimai.cn/app/baseinfo/appid/'
 
-
-
     task = conn.db['task']
     finished = conn.db['finished_task']
 

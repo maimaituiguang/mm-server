@@ -2,10 +2,16 @@
 {%- set page = 'home' %}
 {% block container %}
 <div id="home">
-    <div class="input-group col-lg-6" style="margin-bottom: 20px;">
-        <input id="search-input" type="text" class="form-control" placeholder="输入用户 ID" >
+    <div class="input-group col-lg-6" style="margin-bottom: 10px;">
+        <input id="search-input-id" type="text" class="form-control" placeholder="输入用户 ID" >
         <span class="input-group-btn">
-            <button class="btn btn-primary home-search" type="button" @click="search" data-loading-text="登录中...">搜索用户</button>
+            <button class="btn btn-primary home-search-id" type="button" @click="searchID" data-loading-text="搜索中...">通过用户ID搜索</button>
+        </span>
+    </div>
+    <div class="input-group col-lg-6" style="margin-bottom: 20px;">
+        <input id="search-input-phone" type="text" class="form-control" placeholder="输入手机号" >
+        <span class="input-group-btn">
+            <button class="btn btn-primary home-search-phone" type="button" @click="searchPhone" data-loading-text="搜索中...">通过手机号搜索</button>
         </span>
     </div>
     <table class="table table-bordered" style="border-radius: 5px;">
@@ -23,7 +29,7 @@
                         <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li v-for="m in members"  @click="selectedMember(m.type)"><a href="#">{[m.name]}</a></li>
+                            <li v-for="m in members"  @click="selectedMember(m.type, item.phone)"><a href="#">{[m.name]}</a></li>
                         </ul>
                     </div>
                </td>
@@ -48,13 +54,13 @@ new Vue({
         // this.search()
     },
     methods: {
-        search () {
-            const phone = $('#search-input').val()
+        searchPhone () {
+            const phone = $('#search-input-phone').val()
             if (phone.length == 0) {
                 return
             }
 
-            const btn = $('.home-search').button('loading')
+            const btn = $('.home-search-phone').button('loading')
             const self = this
             axios.get('/search-user/'+phone).then(function (res) {
                 btn.button('reset')
@@ -62,8 +68,21 @@ new Vue({
             })
         },
 
-        selectedMember(type) {
-            const phone = $('#search-input').val()
+        searchID () {
+            const phone = $('#search-input-id').val()
+            if (phone.length == 0) {
+                return
+            }
+
+            const btn = $('.home-search-id').button('loading')
+            const self = this
+            axios.get('/search-user/'+phone).then(function (res) {
+                btn.button('reset')
+                self.lists = res.data
+            })
+        },
+
+        selectedMember(type, phone) {
             const btn = $('#member').button('loading')
             const self = this
             axios.get('/update-role/'+type+'/'+phone).then(function (res) {
@@ -73,12 +92,11 @@ new Vue({
         },
 
         task(item) {
-            const phone = $('#search-input').val()
             const btn = $('#task').button('loading')
             const self = this
             status = parseInt(item.task_status) ? 0 : 1
-            console.log(item.task_status)
-            axios.get('/update-status/'+status+'/'+phone).then(function (res) {
+            // console.log(item.task_status)
+            axios.get('/update-status/'+status+'/'+item.phone).then(function (res) {
                 self.lists = []
                 if (res.data.success == '1') {
                     setTimeout(() => {
