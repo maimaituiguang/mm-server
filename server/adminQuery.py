@@ -37,6 +37,21 @@ def update_role(role, phone):
     try:
         account = conn.db['account']
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
+
+        re = account.find_one({'phone': int(phone)})
+        re = account.find_one({'user_id': re['yao_code']})
+
+        ms = conn.db['member'].find({})
+        price = 0
+        for m in ms:
+            if role != m['type']:
+                continue
+            price = m['price'] * 5.0 / 100.0
+            break
+
+        conn.db['yao_record'].insert_one({'phone': int(re['phone']), 'yao_phone': int(phone), 'price': price, 'create_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+        conn.db['wallet'].wallet.update_one({'phone': int(re['phone'])}, {'$inc': {'un_take': price}})
+
         return search(phone)
     except:
         return json.dumps([])
