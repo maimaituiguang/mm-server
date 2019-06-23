@@ -70,6 +70,11 @@ def all_task(offset):
 
 def submit_task(request):
     phone = __parsePhone(__zc_0(request))
+
+    ref = conn.db['finished_task'].find({'end_time': {'$gt': int(time.time())}, 'phone': int(phone)})
+    if len(list(ref)) >= 3:
+        return False
+
     dic = json.loads(request.get_data())
     dic['task_id'] = ObjectId(dic['task_id'])
     dic['phone'] = phone
