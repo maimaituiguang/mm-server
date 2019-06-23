@@ -56,6 +56,8 @@ def finished_task(offset=0):
         lists = []
         for item in re:
             item['_id'] = str(item['_id'])
+            timeArray = time.localtime(item['create_time']) 
+            item['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
             lists.append(item)
         return json.dumps(lists)
     except:
@@ -89,6 +91,8 @@ def all_take(offset=0):
     ttre = []
     for item in tt:
         item['_id'] = str(item['_id'])
+        timeArray = time.localtime(item['create_time']) 
+        item['create_time'] = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
         ttre.append(item)
         if item['phone'] in phones:
             continue
