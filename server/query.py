@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 import conn, common
-import time, json
+import time, json, datetime
 from bson import ObjectId
 
 def apps(offset):
@@ -71,7 +71,10 @@ def all_task(offset):
 def submit_task(request):
     phone = __parsePhone(__zc_0(request))
 
-    ref = conn.db['finished_task'].find({'end_time': {'$gt': int(time.time())}, 'phone': int(phone)})
+    today = datetime.date.today()
+    today_time = int(time.mktime(today.timetuple())) + 8 * 3600
+
+    ref = conn.db['finished_task'].find({'create_time': {'$gt': today_time}, 'phone': int(phone)})
     if len(list(ref)) >= 3:
         return False
 
