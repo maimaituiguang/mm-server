@@ -131,6 +131,10 @@ def register(request):
 
         if data.has_key('userID'):
             re['user_id'] = data['userID']
+        else:
+            re['user_id'] = __parsePhone(data['phone'])
+
+        re['create_time'] = common.currentTime()
 
         ire = account.insert_one(dic)
         if ire.inserted_id is None:
