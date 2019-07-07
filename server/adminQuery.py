@@ -44,8 +44,12 @@ def update_role(role, phone):
         ms = conn.db['member'].find_one({'type': int(role)})
         price = ms['price'] * 5.0 / 100.0
 
-        conn.db['yao_record'].insert_one({'phone': int(re['phone']), 'yao_phone': int(phone), 'price': price, 'create_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
-        conn.db['wallet'].wallet.update_one({'phone': int(re['phone'])}, {'$inc': {'un_take': price}})
+        role_phone = ""
+        if re is not None and re.has_key('phone'):
+            role_phone = re['phone']
+            conn.db['wallet'].wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
+
+        conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
 
         return search(phone)
     except:
