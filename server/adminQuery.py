@@ -34,23 +34,26 @@ def search(phone):
         return json.dumps([])
 
 def update_role(role, phone):
-    account = conn.db['account']
-    account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
+    try:
+        account = conn.db['account']
+        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
     
-    re = account.find_one({'phone': int(phone)})
-    re = account.find_one({'user_id': re['yao_code']})
+        re = account.find_one({'phone': int(phone)})
+        re = account.find_one({'user_id': re['yao_code']})
 
-    ms = conn.db['member'].find_one({'type': int(role)})
-    price = ms['price'] * 5.0 / 100.0
+        ms = conn.db['member'].find_one({'type': int(role)})
+        price = ms['price'] * 5.0 / 100.0
 
-    role_phone = ""
-    if re is not None and re.has_key('phone'):
-        role_phone = re['phone']
-        conn.db['wallet'].wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
+        role_phone = ""
+        if re is not None and re.has_key('phone'):
+            role_phone = re['phone']
+            conn.db['wallet'].wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
-    conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
-
-    return search(phone)
+        conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())})
+ 
+        return search(phone)
+    except:
+        return json.dumps([])
         
 def update_status(task_status, phone):
     try:
