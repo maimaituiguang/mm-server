@@ -44,7 +44,7 @@ def update_role(role, phone):
         ms = conn.db['member'].find_one({'type': int(role)})
         price = ms['price'] * 5.0 / 100.0
 
-        role_phone = ""
+        role_phone = "0"
         if re is not None and re.has_key('phone'):
             role_phone = re['phone']
             conn.db['wallet'].wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
