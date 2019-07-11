@@ -72,7 +72,7 @@ def submit_task(request):
     phone = __parsePhone(__zc_0(request))
 
     today = datetime.date.today()
-    today_time = int(time.mktime(today.timetuple())) + 8 * 3600
+    today_time = int(time.mktime(today.timetuple()))
 
     ref = conn.db['finished_task'].find({'create_time': {'$gt': today_time}, 'phone': int(phone)})
     if len(list(ref)) >= 3:
