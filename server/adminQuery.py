@@ -47,7 +47,7 @@ def update_role(role, phone):
         role_phone = "0"
         if re is not None and re.has_key('phone'):
             role_phone = re['phone']
-            conn.db['wallet'].wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
+            conn.db['wallet'].update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
         conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime()})
  
