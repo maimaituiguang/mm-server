@@ -82,6 +82,7 @@ def submit_task(request):
     dic['task_id'] = ObjectId(dic['task_id'])
     dic['phone'] = phone
     dic['status'] = 0
+    # 这里的时间戳只能用 time.time(), 和 crontab 有关
     dic['create_time'] = int(time.time())
     try:
         task = conn.db['task']
