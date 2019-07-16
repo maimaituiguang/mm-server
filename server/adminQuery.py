@@ -36,17 +36,34 @@ def search(phone):
 def update_role(role, phone):
     try:
         account = conn.db['account']
-        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
-    
+
         re = account.find_one({'phone': int(phone)})
-        re = account.find_one({'user_id': re['yao_code']})
+        old_role = 0
+        if re.has_key('role'):
+            old_role = int(re['role'])
 
-        ms = conn.db['member'].find_one({'type': int(role)})
-        price = ms['price'] * 5.0 / 100.0
+        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
 
+        price = 0
+        if int(role) > old_role:
+            ms = conn.db['member'].find({})
+            old_price = 0
+            new_price = 0
+            for m in ms:
+                if m['type'] == old_role:
+                    old_price = m['price']
+                    continue
+                if m['type'] == int(role):
+                    new_price = m['price']
+                    continue
+
+
+            price = (new_price - old_price) * 5.0 / 100.0
+
+        yao_user = account.find_one({'user_id': re['yao_code']})
         role_phone = "0"
-        if re is not None and re.has_key('phone'):
-            role_phone = re['phone']
+        if yao_user is not None and yao_user.has_key('phone'):
+            role_phone = yao_user['phone']
             conn.db['wallet'].update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
         conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime()})
