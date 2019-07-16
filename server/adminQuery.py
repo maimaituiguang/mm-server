@@ -60,7 +60,10 @@ def update_role(role, phone):
 
             price = (new_price - old_price) * 5.0 / 100.0
 
-        yao_user = account.find_one({'user_id': re['yao_code']})
+        yao_user = None
+        if re.has_key('yao_code'):
+            yao_user = account.find_one({'user_id': re['yao_code']})
+
         role_phone = "0"
         if yao_user is not None and yao_user.has_key('phone'):
             role_phone = yao_user['phone']
