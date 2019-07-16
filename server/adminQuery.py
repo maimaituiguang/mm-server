@@ -66,7 +66,7 @@ def update_role(role, phone):
             role_phone = yao_user['phone']
             conn.db['wallet'].update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
-        conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime()})
+        conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime(), 'create_timestamp': int(time.time())})
  
         return search(phone)
     except:
