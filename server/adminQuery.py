@@ -44,21 +44,18 @@ def update_role(role, phone):
 
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
 
-        price = 0
-        if int(role) > old_role:
-            ms = conn.db['member'].find({})
-            old_price = 0
-            new_price = 0
-            for m in ms:
-                if m['type'] == old_role:
-                    old_price = m['price']
-                    continue
-                if m['type'] == int(role):
-                    new_price = m['price']
-                    continue
+        ms = conn.db['member'].find({})
+        old_price = 0
+        new_price = 0
+        for m in ms:
+            if m['type'] == old_role:
+                old_price = m['price']
+                continue
+            if m['type'] == int(role):
+                new_price = m['price']
+                continue
 
-
-            price = (new_price - old_price) * 5.0 / 100.0
+        price = (new_price - old_price) * 5.0 / 100.0
 
         yao_user = None
         if re.has_key('yao_code'):
