@@ -93,6 +93,10 @@ def update_account():
     return __response(json.dumps({'success': False}))
 
 
+@app.route('/message')
+def message():
+    return __response(json.dumps({'text': ''}))
+
 
 def __response(json):
     return Response(json, mimetype='application/json')
