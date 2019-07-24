@@ -175,12 +175,15 @@ def client_login(request):
 
     account = conn.db['account']
     re = account.find_one({'phone': int(data['phone']), 'password': common.md5(data['password'])})
-    if re is None or re['account_status'] != 0:
-        return False
+    if re is None:
+        return '账号或密码错误'
+
+    if re['account_status'] != 0:
+        return '由于您严重违反了「麦麦推广」用户协议第 2.3 条，平台将永久封禁您的账号，如有疑问请联系客服 QQ：2582985333'
 
     vip = conn.db['member'].find_one({'type': re['role']})
     if vip is None:
-        return False
+        return '登录失败，请重试'
 
     re['role_name'] = vip['name']
     re['reward'] = vip['reward']

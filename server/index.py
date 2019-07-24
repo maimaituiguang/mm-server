@@ -34,6 +34,8 @@ def client_login():
         re = query.client_login(request)
         if isinstance(re, dict):
             return __response(json.dumps({'success': True, 'data': re}))
+        else:
+            return __response(json.dumps({'success': False, 'data': re}))
 
     return __response(json.dumps({'success': False}))
 
