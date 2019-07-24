@@ -154,6 +154,13 @@ def take_finished(_id, status):
 def wallet_list():
     wallet = conn.db['wallet']
     account = conn.db['account']
-    re = wallet.find({'un_take': {'$gt': 0}}, {'_id': 0}).sort('un_take', -1)
-    # are = account.find()
-    return json.dumps(list(re))
+    re = wallet.find({'has_take': {'$gt': 0}}, {'_id': 0}).sort('has_take', -1)
+    are = account.find()
+    account_result = list(are)
+    result = []
+    for item in re:
+        for item_cnt in account_result:
+            if item['phone'] == item_cnt['phone'] and item_cnt['account_status'] == 0:
+                result.append(item)
+
+    return json.dumps(result)

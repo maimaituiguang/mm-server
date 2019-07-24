@@ -53,6 +53,10 @@ def check_task():
 def check_reward():
     return render_template('reward.html')
 
+@admin_api.route('/wallet-list')
+def wallet_list():
+    return render_template('takes.html')
+
 
 
 

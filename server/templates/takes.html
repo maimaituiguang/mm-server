@@ -1,5 +1,5 @@
 {%- extends "layout.html" %}
-{%- set page = 'reward' %}
+{%- set page = 'takes' %}
 {% block container %}
 <div id="takes">
   <table class="table table-bordered" style="border-radius: 5px;">
@@ -7,9 +7,9 @@
     <tbody>
       <tr v-for="item in lists">
           <td>{[item.phone]}</td>
-          <td>{[item.has_take + item.un_take]}</td>
-          <td>{[item.has_take]}</td>
-          <td>{[item.un_take]}</td>
+          <td>{[(item.has_take + item.un_take).toFixed(2)]}</td>
+          <td>{[item.has_take.toFixed(2)]}</td>
+          <td>{[item.un_take.toFixed(2)]}</td>
       </tr>
     </tbody>
   </table>
