@@ -3,17 +3,19 @@
 {% block container %}
 <div id="takes">
   <table class="table table-bordered" style="border-radius: 5px;">
-      <thead><tr class="active"><th>手机号</th><th>总收益</th><th>已提现</th><th>未提现</th></tr></thead>
+      <thead><tr class="active"><th>手机号</th><th>总收益</th><th>已提现</th><th>未提现</th><th>操作</th></tr></thead>
     <tbody>
       <tr v-for="item in lists">
           <td>{[item.phone]}</td>
           <td>{[(item.has_take + item.un_take).toFixed(2)]}</td>
           <td>{[item.has_take.toFixed(2)]}</td>
           <td>{[item.un_take.toFixed(2)]}</td>
+          <td>
+              <button :id="item.phone" type="button" class="btn btn-danger" data-loading-text="更新中..." @click="banned(item)">封号</button>
+          </td>
       </tr>
     </tbody>
   </table>
-<!--  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore" style="margin-bottom: 100px;">加载更多</button>-->
 </div>
 <script>
   new Vue({
