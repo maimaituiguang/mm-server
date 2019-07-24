@@ -90,6 +90,11 @@ def take_finished(_id, status):
     return __response(adminQuery.take_finished(_id, status))
 
 
+@admin_api.route('/take-detail')
+def take_detail():
+    return __response(adminQuery.wallet_list())
+
+
 def __response(json):
     return Response(json, mimetype='application/json')
 

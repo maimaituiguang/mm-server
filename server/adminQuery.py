@@ -148,3 +148,12 @@ def take_finished(_id, status):
         return json.dumps({'success': True})
     
     return json.dumps({'success': False, 'info': '更新失败，请重试'})
+
+
+
+def wallet_list():
+    wallet = conn.db['wallet']
+    account = conn.db['account']
+    re = wallet.find({'un_take': {'$gt': 0}}, {'_id': 0}).sort('un_take', -1)
+    # are = account.find()
+    return json.dumps(list(re))

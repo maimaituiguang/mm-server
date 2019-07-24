@@ -1,0 +1,38 @@
+{%- extends "layout.html" %}
+{%- set page = 'reward' %}
+{% block container %}
+<div id="takes">
+  <table class="table table-bordered" style="border-radius: 5px;">
+      <thead><tr class="active"><th>手机号</th><th>总收益</th><th>已提现</th><th>未提现</th></tr></thead>
+    <tbody>
+      <tr v-for="item in lists">
+          <td>{[item.phone]}</td>
+          <td>{[item.has_take + item.un_take]}</td>
+          <td>{[item.has_take]}</td>
+          <td>{[item.un_take]}</td>
+      </tr>
+    </tbody>
+  </table>
+<!--  <button id="loadMore" type="button" class="btn btn-default" data-loading-text="更新中..." @click="loadMore" style="margin-bottom: 100px;">加载更多</button>-->
+</div>
+<script>
+  new Vue({
+    delimiters:['{[', ']}'],
+    el: '#takes',
+    data: {
+      lists: []
+    },
+    created () {
+      this.fetch()
+    },
+    methods: {
+      fetch(offset=0) {
+        const self = this
+        axios.get('/take-detail').then(function (res) {
+          self.lists = res.data
+        })
+      }
+    }
+  })
+</script>
+{% endblock %}
