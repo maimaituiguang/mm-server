@@ -106,23 +106,21 @@ def task_pass(request):
     if re.modified_count != 1:
         return json.dumps({'success': False, 'info': '操作失败，请重试'})
 
-    if int(data['status']) == 2:
+    if int(data['status']) != 1:
         return json.dumps({'success': True})
-
-
-    account = conn.db['account']
-    member = conn.db['member']
-    ac = account.find_one({'phone': int(data['phone'])}, {'_id': 0, 'yao_code': 1, 'role': 1})
-    me = member.find_one({'type': ac['role']}, {'_id': 0, 'reward': 1})
-    if ac is not None and me is not None and ac.has_key('yao_code') and len(ac['yao_code'] > 0):
-        yao_ac = account.find_one({'user_id': ac['yao_code']}, {'_id': 0, 'phone': 1})
 
     # 更新钱包数据
     wallet = conn.db['wallet']
     wallet.update_one({'phone': int(data['phone'])}, {'$inc': {'un_take': int(data['reward'])}})
 
-    if yao_ac is not None and me is not None and yao_ac.has_key('phone'):
-        wallet.update_one({'phone': int(yao_ac['phone'])}, {'$inc': {'un_take': me['reward'] * 20.0 / 100}})
+    account = conn.db['account']
+    ac = account.find_one({'phone': int(data['phone'])}, {'_id': 0, 'yao_code': 1})
+    if ac is not None and ac.has_key('yao_code') and len(ac['yao_code']) > 0:
+        yao_ac = account.find_one({'user_id': ac['yao_code']}, {'_id': 0, 'phone': 1, 'role': 1})
+
+    # 合伙人
+    if yao_ac is not None and yao_ac['role'] == 10:
+        wallet.update_one({'phone': int(yao_ac['phone'])}, {'$inc': {'un_take': int(data['reward']) * 20 / 100}})
 
     return json.dumps({'success': True})
 
