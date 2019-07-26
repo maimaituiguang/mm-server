@@ -161,6 +161,8 @@ def wallet_list():
     for item in re:
         for item_cnt in account_result:
             if item['phone'] == item_cnt['phone'] and item_cnt['account_status'] == 0:
+                if item_cnt.has_key('card'):
+                    item['name'] = item_cnt['card']['userName']
                 result.append(item)
 
     return json.dumps(result)
