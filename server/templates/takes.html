@@ -12,7 +12,7 @@
       <tr v-for="item in lists">
           <td>{[item.name]}</td>
           <td>{[item.phone]}</td>
-          <td>{[item.input]}</td>
+          <td>{[item.hasOwnProperty('input') ? item.input.toFixed(2) : ""]}</td>
           <td>{[(item.has_take + item.un_take).toFixed(2)]}</td>
           <td>{[item.has_take.toFixed(2)]}</td>
           <td>{[item.un_take.toFixed(2)]}</td>

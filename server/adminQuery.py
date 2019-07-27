@@ -172,6 +172,8 @@ def take_finished(_id, status):
 
 
 def wallet_list():
+    white_list = ['15236657589', '17127122655', '13044744473', '18338911968']
+
     wallet = conn.db['wallet']
     account = conn.db['account']
     record = conn.db['yao_record']
@@ -194,6 +196,8 @@ def wallet_list():
     account_result = list(are)
     result = []
     for item in re:
+        if str(item['phone']) in white_list:
+            continue
         for item_cnt in account_result:
             if item['phone'] == item_cnt['phone'] and item_cnt['account_status'] == 0:
                 if item_cnt.has_key('card'):
