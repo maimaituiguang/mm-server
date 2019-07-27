@@ -174,7 +174,24 @@ def take_finished(_id, status):
 def wallet_list():
     wallet = conn.db['wallet']
     account = conn.db['account']
+    record = conn.db['yao_record']
     re = wallet.find({'has_take': {'$gt': 0}}, {'_id': 0}).sort('has_take', -1)
+    record = record.find({}, {'_id': 0, 'price': 1, 'yao_phone': 1})
+
+    phone_list = []
+    record_dic = {}
+    for cord in record:
+        phone = str(cord['yao_phone'])
+        if phone not in phone_list:
+            phone_list.append(phone)
+            record_dic[phone] = cord['price']
+            continue
+        else:
+            record_dic[phone] = record_dic[phone] + cord['price']
+            continue
+
+    print record_dic
+
     are = account.find()
     account_result = list(are)
     result = []
@@ -183,6 +200,11 @@ def wallet_list():
             if item['phone'] == item_cnt['phone'] and item_cnt['account_status'] == 0:
                 if item_cnt.has_key('card'):
                     item['name'] = item_cnt['card']['userName']
+
+                if record_dic.has_key(str(item['phone'])):
+                    item['input'] = record_dic[str(item['phone'])] / 0.05
+
                 result.append(item)
+    
 
     return json.dumps(result)
