@@ -190,8 +190,6 @@ def wallet_list():
             record_dic[phone] = record_dic[phone] + cord['price']
             continue
 
-    print record_dic
-
     are = account.find()
     account_result = list(are)
     result = []
