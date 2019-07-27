@@ -83,6 +83,15 @@ def update_status(task_status, phone):
     except:
         return json.dumps({'success': False})
 
+def update_account_status(account_status, phone):
+    try:
+        account = conn.db['account']
+        account.update_one({'phone': int(phone)}, {'$set':{'account_status': int(account_status)}})
+        return json.dumps({'success': True})
+    except:
+        return json.dumps({'success': False})
+
+
 def finished_task(offset=0):
     try:
         task = conn.db['finished_task']

@@ -77,6 +77,10 @@ def update_role(role=None, phone=None):
 def update_status(task_status=None, phone=None):
     return __response(adminQuery.update_status(task_status, phone))
 
+@admin_api.route('/update-account-status/<int:status>/<string:phone>')
+def update_account_status(status=None, phone=None):
+    return __response(adminQuery.update_account_status(status, phone))
+
 @admin_api.route('/finished-task/<int:offset>')
 def finished_task(offset):
     return __response(adminQuery.finished_task(offset))
