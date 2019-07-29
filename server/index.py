@@ -100,6 +100,13 @@ def message():
     return __response(json.dumps({'text': ''}))
 
 
+@app.route('/banner')
+def banner():
+    data = ['https://maimaituiguang.github.io/mm-web/images/banner1.png',
+        'https://maimaituiguang.github.io/mm-web/images/banner2.png']
+    return __response(json.dumps({'data': data}))
+
+
 def __response(json):
     return Response(json, mimetype='application/json')
 

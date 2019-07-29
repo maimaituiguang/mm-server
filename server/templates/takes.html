@@ -2,18 +2,20 @@
 {%- set page = 'takes' %}
 {% block container %}
 <div id="takes">
+  <div>
+    <h4>总投入：{[totalsInput.toFixed(2)]} &nbsp;&nbsp;&nbsp;&nbsp; 总收益：{[totalsReward.toFixed(2)]}</h4>
+    <br />
+  </div>
   <table class="table table-bordered" style="border-radius: 5px;">
-      <thead><tr class="active"><th>姓名</th><th>手机号</th><th>总收益</th><th>已提现</th><th>未提现</th><th>操作</th></tr></thead>
+      <thead><tr class="active"><th>姓名</th><th>手机号</th><th>总投入</th><th>总收益</th><th>已提现</th><th>未提现</th></tr></thead>
     <tbody>
       <tr v-for="item in lists">
           <td>{[item.name]}</td>
           <td>{[item.phone]}</td>
+          <td>{[item.hasOwnProperty('input') ? item.input.toFixed(2) : ""]}</td>
           <td>{[(item.has_take + item.un_take).toFixed(2)]}</td>
           <td>{[item.has_take.toFixed(2)]}</td>
           <td>{[item.un_take.toFixed(2)]}</td>
-          <td>
-              <button :id="item.phone" type="button" class="btn btn-danger" data-loading-text="更新中..." @click="banned(item)">封号</button>
-          </td>
       </tr>
     </tbody>
   </table>
@@ -23,7 +25,9 @@
     delimiters:['{[', ']}'],
     el: '#takes',
     data: {
-      lists: []
+      lists: [],
+      totalsInput: 0,
+      totalsReward: 0
     },
     created () {
       this.fetch()
@@ -33,6 +37,14 @@
         const self = this
         axios.get('/take-detail').then(function (res) {
           self.lists = res.data
+          for (i = 0; i < self.lists.length; i++) {
+            var item = self.lists[i]
+            if (item.hasOwnProperty('input')) {
+              self.totalsInput += item.input
+            }
+
+            self.totalsReward += (item.has_take + item.un_take)
+          }
         })
       }
     }

@@ -23,7 +23,8 @@
                <td>{[item.user_id]}</td>
                <td>{[item.member.name]}</td>
                <td>
-                    <button id="task" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button>
+                    <button id="task" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button> &nbsp;
+                    <button id="account" @click="account(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.account_status == 0 ? '封号': '解封']}</button> &nbsp;
                     <div class="btn-group" role="group">
                         <button id="member" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         升级会员
@@ -102,6 +103,24 @@ new Vue({
                 if (res.data.success == '1') {
                     setTimeout(() => {
                         item.task_status = status
+                        self.lists.push(item)
+                    }, 1);
+                } else {
+                    alert('更新失败')
+                }
+            })
+        },
+
+        account(item) {
+            const btn = $('#account').button('loading')
+            const self = this
+            status = parseInt(item.account_status) ? 0 : 1
+            // console.log(item.account_status)
+            axios.get('/update-account-status/'+status+'/'+item.phone).then(function (res) {
+                self.lists = []
+                if (res.data.success == '1') {
+                    setTimeout(() => {
+                        item.account_status = status
                         self.lists.push(item)
                     }, 1);
                 } else {
