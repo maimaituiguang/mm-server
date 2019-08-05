@@ -97,11 +97,22 @@ def finished_task(offset=0):
         task = conn.db['finished_task']
         re = task.find({'status': 0}, {'task_id': 0}).limit(10).skip(offset).sort('create_time', -1)
         lists = []
+        phones = []
         for item in re:
             item['_id'] = str(item['_id'])
             timeArray = datetime.datetime.utcfromtimestamp(item['create_time'] + 28800) 
             item['create_time'] = timeArray.strftime("%Y-%m-%d %H:%M:%S")
             lists.append(item)
+            if item['phone'] in phones:
+              continue
+            phones.append(item['phone'])
+
+        users = conn.db['account'].find({'phone': {'$in': phones}})
+        for us in users:
+            for ta in lists:
+                if ta['phone'] == us['phone'] and us.has_key('mark'):
+                    ta['mark'] = us['mark']
+
         return json.dumps(lists)
     except:
         return json.dumps([])
@@ -139,6 +150,7 @@ def task_pass(request):
 def all_take(offset=0):
     wallet = conn.db['wallet']
     take = conn.db['take_record']
+    acc = conn.db['account']
 
     tt = take.find({'status': 0}).limit(10).skip(offset).sort('create_time', -1)
     phones = []
@@ -157,6 +169,12 @@ def all_take(offset=0):
         for ta in ttre:
             if ta['phone'] == wal['phone']:
                 ta['totals'] = float(wal['un_take'] + wal['has_take'])
+
+    users = acc.find({'phone': {'$in': phones}})
+    for us in users:
+        for ta in ttre:
+            if ta['phone'] == us['phone'] and us.has_key('mark'):
+                ta['mark'] = us['mark']
 
     return json.dumps(ttre)
 
@@ -210,3 +228,10 @@ def wallet_list():
     
 
     return json.dumps(result)
+
+
+def remark(phone, mark):
+    acc = conn.db['account']
+    acc.update_one({'phone': int(phone)}, {'$set': {'mark': mark}})
+    return search(phone)
+    

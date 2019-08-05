@@ -102,6 +102,10 @@ def take_finished(_id, status):
 def take_detail():
     return __response(adminQuery.wallet_list())
 
+@admin_api.route('/remark/<string:phone>/<string:mark>')
+def remark(phone, mark):
+    return __response(adminQuery.remark(phone, mark))
+
 
 def __response(json):
     return Response(json, mimetype='application/json')

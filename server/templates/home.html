@@ -15,13 +15,18 @@
         </span>
     </div>
     <table class="table table-bordered" style="border-radius: 5px;">
-        <thead><tr class="active"><th>用户名</th><th>手机号</th><th>ID</th><th>角色</th><th>操作</th></tr></thead>
+        <thead><tr class="active"><th>手机号</th><th>ID</th><th>角色</th><th style="width: 200px;">备注</th><th style="width: 300px;">操作</th></tr></thead>
         <tbody>
            <tr v-for="item in lists">
-               <td>{[item.nick]}</td>
                <td>{[item.phone]}</td>
                <td>{[item.user_id]}</td>
                <td>{[item.member.name]}</td>
+               <td class="input-group">
+                    <input :id="'remark-input-'+item.user_id" type="text" class="form-control" placeholder="备注信息" :value="item.mark"/>
+                    <span class="input-group-btn">
+                        <button :id="item.user_id" class="btn btn-primary" type="button" @click="remark(item)" data-loading-text="保存中...">保存</button>
+                    </span>
+               </td>
                <td>
                     <button id="task" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button> &nbsp;
                     <button id="account" @click="account(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.account_status == 0 ? '封号': '解封']}</button> &nbsp;
@@ -127,7 +132,24 @@ new Vue({
                     alert('更新失败')
                 }
             })
+        },
+
+        remark(item) {
+            const mark = $('#remark-input-'+item.user_id).val()
+            if (mark.length == 0) {
+                return
+            }
+
+            const btn = $('#'+item.user_id).button('loading')
+            const self = this
+            axios.get('/remark/'+item.phone+'/'+mark).then(function (res) {
+                btn.button('reset')
+                self.lists = res.data
+            })
         }
+
+
+
     }
 })
 </script>

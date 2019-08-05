@@ -3,7 +3,7 @@
 {% block container %}
 <div id="reward">
   <table class="table table-bordered" style="border-radius: 5px;">
-    <thead><tr class="active"><th>手机号</th><th>提现金额</th><th>总收益</th><th>银行卡</th><th>时间</th><th>操作</th></tr></thead>
+    <thead><tr class="active"><th>手机号</th><th>提现金额</th><th>总收益</th><th>银行卡</th><th>时间</th><th>备注</th><th>操作</th></tr></thead>
     <tbody>
       <tr v-for="item in lists">
         <td>{[item.phone]}</td>
@@ -15,6 +15,7 @@
           姓名：{[item.card.userName]}
         </td>
         <td>{[item.create_time]}</td>
+        <td>{[item.mark]}</td>
         <td>
           <button :id="item._id" type="button" class="btn btn-primary" data-loading-text="更新中..." @click="take(item)">完成提现</button>
         </td>
