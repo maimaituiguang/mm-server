@@ -195,7 +195,8 @@ def wallet_list():
     wallet = conn.db['wallet']
     account = conn.db['account']
     record = conn.db['yao_record']
-    re = wallet.find({'has_take': {'$gt': 0}}, {'_id': 0}).sort('has_take', -1)
+
+    re = list(wallet.find({}, {'_id': 0}))
     record = record.find({}, {'_id': 0, 'price': 1, 'yao_phone': 1})
 
     phone_list = []
@@ -210,22 +211,24 @@ def wallet_list():
             record_dic[phone] = record_dic[phone] + cord['price']
             continue
 
-    are = account.find()
+    are = account.find({'role': {'$gt': 0}}).sort('update_time', 1)
     account_result = list(are)
-    result = []
-    for item in re:
-        if str(item['phone']) in white_list:
-            continue
-        for item_cnt in account_result:
-            if item['phone'] == item_cnt['phone'] and item_cnt['account_status'] == 0:
-                if item_cnt.has_key('card'):
-                    item['name'] = item_cnt['card']['userName']
-
-                if record_dic.has_key(str(item['phone'])):
-                    item['input'] = record_dic[str(item['phone'])] / 0.05
-
-                result.append(item)
     
+    result = []
+    for item_cnt in account_result:
+        if str(item_cnt['phone']) in white_list:
+            continue
+        for item in re:
+            if item['phone'] != item_cnt['phone']:
+                continue
+
+            item['account_status'] = item_cnt['account_status']
+
+            if item_cnt.has_key('card'):
+                item['name'] = item_cnt['card']['userName']
+            if record_dic.has_key(str(item['phone'])):
+                item['input'] = record_dic[str(item['phone'])] / 0.05
+            result.append(item)
 
     return json.dumps(result)
 
