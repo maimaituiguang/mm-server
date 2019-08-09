@@ -223,6 +223,7 @@ def wallet_list():
                 continue
 
             item['account_status'] = item_cnt['account_status']
+            item['task_status'] = item_cnt['task_status']
 
             if item_cnt.has_key('card'):
                 item['name'] = item_cnt['card']['userName']
