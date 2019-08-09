@@ -224,11 +224,13 @@ def wallet_list():
 
             item['account_status'] = item_cnt['account_status']
             item['task_status'] = item_cnt['task_status']
-
+            item['all_reward'] = item['has_take'] + item['un_take']
             if item_cnt.has_key('card'):
                 item['name'] = item_cnt['card']['userName']
             if record_dic.has_key(str(item['phone'])):
                 item['input'] = record_dic[str(item['phone'])] / 0.05
+                if item['input'] > 10:
+                    item['rate'] = item['all_reward'] / item['input'] * 100
             result.append(item)
 
     return json.dumps(result)
