@@ -15,9 +15,10 @@
         </span>
     </div>
     <table class="table table-bordered" style="border-radius: 5px;">
-        <thead><tr class="active"><th>手机号</th><th>ID</th><th>角色</th><th style="width: 200px;">备注</th><th style="width: 300px;">操作</th></tr></thead>
+        <thead><tr class="active"><th>昵称</th><th>手机号</th><th>ID</th><th>角色</th><th style="width: 200px;">备注</th><th style="width: 300px;">操作</th></tr></thead>
         <tbody>
            <tr v-for="item in lists">
+               <td>{[item.nick]}</td>
                <td>{[item.phone]}</td>
                <td>{[item.user_id]}</td>
                <td>{[item.member.name]}</td>
