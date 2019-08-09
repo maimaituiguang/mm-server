@@ -21,12 +21,26 @@ def publish(cou):
 
 def makeTask(platform, cou):
     app = conn.db['apps']
-    total = app.find({'platform': platform}).count()
-    offset = random.randint(0, total - cou - 1)
-    return app.find({'platform': platform}, {'_id': 0}).limit(cou).skip(offset)
+    task = conn.db['task']
 
+    last = task.find_one({'detail.platform': platform}, sort=[("end_time", -1)])
+    detail = last['detail']
+
+    if detail.has_key('index'):
+        index = detail['index']
+        total = app.count({'platform': platform})
+        index = index if index + cou <= total else 0
+    else:
+        index = 0
+
+    return app.find({'platform': platform, 'index': {'$gt': index}}, {'_id': 0}).limit(cou)
 
 
 if __name__ == '__main__':
     publish(3)
 
+    # acc = conn.db['account']
+    # re = acc.find()
+    # for item in re:
+    #     acc.update_one({'_id': item['_id']}, {'$set': {'super_phone': item['phone']}})
+    #     print item['phone']
