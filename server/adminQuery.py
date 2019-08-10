@@ -5,6 +5,7 @@ import json, time, datetime
 from bson import ObjectId
 import query
 
+white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762']
 
 def verify_user(phone, password):
     account = conn.db['account']
@@ -200,8 +201,6 @@ def take_finished(_id, status):
 
 
 def wallet_list():
-    white_list = ['15236657589', '17127122655', '13044744473', '18338911968']
-
     wallet = conn.db['wallet']
     account = conn.db['account']
     record = conn.db['yao_record']
@@ -246,11 +245,9 @@ def wallet_list():
     return json.dumps(result)
 
 def board():
-    white_list = ['15236657589', '17127122655', '13044744473', '18338911968']
     yao = list(conn.db['yao_record'].find())
     take = list(conn.db['take_record'].find({'status': 1}))
-    
-    
+
     today_time = int(time.mktime(datetime.datetime.now().date().timetuple()))
     month_time = int(time.mktime(datetime.date(datetime.date.today().year,datetime.date.today().month,1).timetuple()))
 
@@ -261,7 +258,7 @@ def board():
     month_take = 0.0
     total_take = 0.0
     for item in yao:
-        if int(item['yao_phone']) in white_list:
+        if str(item['yao_phone']) in white_list:
             continue
 
         price = item['price'] / 0.05
@@ -273,7 +270,7 @@ def board():
         total_input += price
     
     for item in take:
-        if int(item['phone']) in white_list:
+        if str(item['phone']) in white_list:
             continue
 
         if item['create_time'] > today_time:
