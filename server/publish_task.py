@@ -42,5 +42,5 @@ if __name__ == '__main__':
     # acc = conn.db['account']
     # re = acc.find()
     # for item in re:
-    #     acc.update_one({'_id': item['_id']}, {'$set': {'super_phone': item['phone']}})
-    #     print item['phone']
+    #     acc.update_one({'_id': item['_id']}, {'$set': {'most_phone': item['super_phone']}})
+    #     print item['super_phone']

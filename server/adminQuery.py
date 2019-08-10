@@ -3,6 +3,7 @@
 import conn, common
 import json, time, datetime
 from bson import ObjectId
+import query
 
 
 def verify_user(phone, password):
@@ -16,20 +17,26 @@ def verify_user(phone, password):
 def search(phone):
     # phone 参数的值可表示 userID 或 phone
 
-    where = {}
     if len(phone) == 11:
-        where = {'phone': int(phone)}
+        where = {'super_phone': int(phone)}
     else:
         where = {'user_id': phone}
 
     try:
         account = conn.db['account']
         member = conn.db['member']
-        re = account.find_one(where, {'_id': 0})
-        mre = member.find_one({'type': re['role']}, {'_id': 0})
-        if re is not None and mre is not None:
-            re['member'] = dict(mre)
-            return json.dumps([dict(re)])
+        accs = account.find(where, {'_id': 0})
+        mre = list(member.find())
+
+        maccs = []
+        for item in accs:
+            for m in mre:
+                if m['type'] != item['role']:
+                    continue
+                item['role_name'] = m['name']
+                maccs.append(item)
+                break
+        return json.dumps(maccs)
     except:
         return json.dumps([])
 
@@ -45,6 +52,9 @@ def update_role(role, phone):
 
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
         # if int(role) == 4 and old_role == 0:
+            # 送青铜
+            # query.create_account(re['super_phone'], 1)
+        #     送 298
         #     wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
 
         ms = conn.db['member'].find({})
@@ -70,7 +80,7 @@ def update_role(role, phone):
             wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
         conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime(), 'create_timestamp': int(time.time())})
- 
+
         return search(phone)
     except:
         return json.dumps([])

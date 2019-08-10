@@ -100,8 +100,8 @@ def submit_task(request):
 
 def account(request):
     phone = __parsePhone(__zc_0(request))
+    re = conn.db['account'].find_one({'phone': int(phone)}, {'_id': 0})
 
-    re = conn.db['account'].find_one({'phone': phone}, {'_id': 0})
     vip = conn.db['member'].find_one({'type': re['role']})
     re['role_name'] = vip['name']
     re['reward'] = vip['reward']
@@ -111,10 +111,10 @@ def account(request):
 
 def register(request):
     data = json.loads(request.get_data())
-    dic = {'phone': int(data['phone']), 'task_status': 0, 'account_status': 0, 'role': 0}
+    dic = {'task_status': 0, 'account_status': 0, 'role': 0}
 
     account = conn.db['account']
-    re = account.find_one({'phone': int(data['phone'])})
+    re = account.find_one({'super_phone': int(data['phone']), 'most_phone': int(data['phone'])})
     if re is None:
         # 未注册用户
         # 最后统一为 re 付值
@@ -130,16 +130,12 @@ def register(request):
         if data.has_key('yaoCode'):
             re['yao_code'] = data['yaoCode']
 
-        if data.has_key('userID'):
-            re['user_id'] = data['userID']
-        else:
-            re['user_id'] = __parsePhone(data['phone'])
+        identifier = __makeIdentifier()
 
-        if data.has_key('super_phone'):
-            re['super_phone'] = data['super_phone']
-        else:
-            re['super_phone'] = re['phone']
-
+        re['super_phone'] = re['phone']
+        re['most_phone'] = re['phone']
+        re['user_id'] = identifier
+        re['phone'] = int(identifier)
         re['create_time'] = common.currentTime()
 
         ire = account.insert_one(dic)
@@ -162,7 +158,7 @@ def register(request):
         if data.has_key('password'):
             update_data['password'] = common.md5(data['password'])
 
-        account.update_one({'phone': re['phone']}, {'$set': update_data})
+        account.update_one({'most_phone': re['most_phone']}, {'$set': update_data})
 
     vip = conn.db['member'].find_one({'type': re['role']})
     if vip is None:
@@ -179,7 +175,7 @@ def client_login(request):
     data = json.loads(request.get_data())
 
     account = conn.db['account']
-    re = account.find_one({'phone': int(data['phone']), 'password': common.md5(data['password'])})
+    re = account.find_one({'super_phone': int(data['phone']), 'password': common.md5(data['password']), 'most_phone': int(data['phone'])})
     if re is None:
         return '账号或密码错误'
 
@@ -194,6 +190,68 @@ def client_login(request):
     re['reward'] = vip['reward']
     re['_id'] = str(re['_id'])
     return re
+
+
+
+def sub_account_list(request):
+    phone = __parsePhone(__zc_0(request))
+    print phone
+    accs = conn.db['account'].find({'super_phone': int(phone)}, {'_id': 0})
+    members = conn.db['member'].find()
+    mbs = {}
+    for m in members:
+        mbs[m['type']] = {'name': m['name'], 'reward': m['reward']}
+
+    sub_list = []
+    for item in accs:
+        item['role_name'] = mbs[item['role']]['name']
+        item['reward'] = mbs[item['role']]['reward']
+        item['account_status_name'] = '正常' if item['task_status'] == 0 else '禁任务'
+        if item['account_status'] != 0:
+            item['account_status_name'] = '封号'
+        sub_list.append(item)
+
+    return sub_list
+
+
+def add_account(request):
+    phone = __parsePhone(__zc_0(request))
+    return create_account(phone)
+
+def create_account(super_phone, role=0):
+    acc = conn.db['account']
+    accs = list(acc.find({'super_phone': int(super_phone)}))
+    if len(accs) == 0:
+        return {'success': False, 'message': '没有找到主账号，请联系客户！'}
+
+    for item in accs:
+        if item['role'] == 0:
+            return {'success': False, 'message': u'ID 为 %s 的账号还未升级会员，不可再次创建子账号! ' % item['user_id']}
+
+    dic = accs[0]
+    identifier = __makeIdentifier()
+
+    dic['nick'] = '子账号 0%d' % len(accs)
+    dic['phone'] = int(identifier)
+    dic['user_id'] = identifier
+    dic['role'] = role
+    dic['task_status'] = 0
+    dic['account_status'] = 0
+    dic['create_time'] = common.currentTime()
+
+    dic.pop('most_phone')
+    dic.pop('password')
+    dic.pop('_id')
+
+    re = acc.insert_one(dic)
+    if re and re.inserted_id:
+        dic.pop('_id')
+        return {'success': True, 'message': dic}
+    else:
+        return {'success': False, 'message': '创建失败，请重试！'}
+
+
+
 
 
 
@@ -324,3 +382,18 @@ def __zc_0(req):
 
 def __parsePhone(phone):
     return int(phone) / 12345
+
+def __makeIdentifier():
+    import random
+    str = ""
+    for i in range(7):
+        ch = chr(random.randrange(ord('0'), ord('9') + 1))
+        str += ch
+
+    re = conn.db['account'].find_one({'user_id': str})
+    if re is None:
+        return str
+    else:
+        return __makeIdentifier()
+
+

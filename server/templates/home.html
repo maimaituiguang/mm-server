@@ -19,9 +19,9 @@
         <tbody>
            <tr v-for="item in lists">
                <td>{[item.nick]}</td>
-               <td>{[item.phone]}</td>
+               <td>{[item.super_phone]}</td>
                <td>{[item.user_id]}</td>
-               <td>{[item.member.name]}</td>
+               <td>{[item.role_name]}</td>
                <td class="input-group">
                     <input :id="'remark-input-'+item.user_id" type="text" class="form-control" placeholder="备注信息" :value="item.mark"/>
                     <span class="input-group-btn">
@@ -29,15 +29,15 @@
                     </span>
                </td>
                <td>
-                    <button id="task" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button> &nbsp;
-                    <button id="account" @click="account(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.account_status == 0 ? '封号': '解封']}</button> &nbsp;
+                    <button :id="'task'+item.user_id" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button> &nbsp;
+                    <button :id="'account'+item.user_id" @click="account(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.account_status == 0 ? '封号': '解封']}</button> &nbsp;
                     <div class="btn-group" role="group">
-                        <button id="member" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <button id="'member'+item.user_id" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         升级会员
                         <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li v-for="m in members"  @click="selectedMember(m.type, item.phone)"><a href="#">{[m.name]}</a></li>
+                            <li v-for="m in members"  @click="selectedMember(m.type, item)"><a href="#">{[m.name]}</a></li>
                         </ul>
                     </div>
                </td>
@@ -90,22 +90,23 @@ new Vue({
             })
         },
 
-        selectedMember(type, phone) {
-            const btn = $('#member').button('loading')
+        selectedMember(type, item) {
+            const btn = $('#member'+item.user_id).button('loading')
             const self = this
-            axios.get('/update-role/'+type+'/'+phone).then(function (res) {
+            axios.get('/update-role/'+type+'/'+item.phone).then(function (res) {
                 btn.button('reset')
-                self.lists = res.data
+                self.lists.pop(item)
+                self.lists.push(...res.data)
             })
         },
 
         task(item) {
-            const btn = $('#task').button('loading')
+            const btn = $('#task'+item.user_id).button('loading')
             const self = this
             status = parseInt(item.task_status) ? 0 : 1
             // console.log(item.task_status)
             axios.get('/update-status/'+status+'/'+item.phone).then(function (res) {
-                self.lists = []
+                self.lists.pop(item)
                 if (res.data.success == '1') {
                     setTimeout(() => {
                         item.task_status = status
@@ -118,12 +119,12 @@ new Vue({
         },
 
         account(item) {
-            const btn = $('#account').button('loading')
+            const btn = $('#account'+item.user_id).button('loading')
             const self = this
             status = parseInt(item.account_status) ? 0 : 1
             // console.log(item.account_status)
             axios.get('/update-account-status/'+status+'/'+item.phone).then(function (res) {
-                self.lists = []
+                self.lists.pop(item)
                 if (res.data.success == '1') {
                     setTimeout(() => {
                         item.account_status = status
@@ -145,7 +146,10 @@ new Vue({
             const self = this
             axios.get('/remark/'+item.phone+'/'+mark).then(function (res) {
                 btn.button('reset')
-                self.lists = res.data
+                self.lists.pop(item)
+                setTimeout(() => {
+                    self.lists.push(...res.data)
+                }, 1)
             })
         }
 

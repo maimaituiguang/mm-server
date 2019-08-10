@@ -105,6 +105,15 @@ def banner():
     data = ['https://maimaituiguang.github.io/mm-web/images/banner5.png', 'https://maimaituiguang.github.io/mm-web/images/banner4.png']
     return __response(json.dumps({'data': data}))
 
+@app.route('/sub-account-list')
+def sub_account_list():
+    return __response(json.dumps(query.sub_account_list(request)))
+
+@app.route('/add-account')
+def add_account():
+    return __response(json.dumps(query.add_account(request)))
+
+
 
 def __response(json):
     return Response(json, mimetype='application/json')
