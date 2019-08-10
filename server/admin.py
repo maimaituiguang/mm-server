@@ -35,10 +35,10 @@ def login():
 
     return render_template('login.html')
 
-# @admin_api.route('/')
-# @admin_api.route('/index')
-# def index():
-#     return render_template('board.html')
+@admin_api.route('/')
+@admin_api.route('/index')
+def index():
+    return render_template('board.html')
 
 @admin_api.route('/')
 @admin_api.route('/home')
@@ -105,6 +105,11 @@ def take_detail():
 @admin_api.route('/remark/<string:phone>/<string:mark>')
 def remark(phone, mark):
     return __response(adminQuery.remark(phone, mark))
+
+@admin_api.route('/board-list')
+def board():
+    return __response(adminQuery.board())
+
 
 
 def __response(json):

@@ -132,8 +132,8 @@ def register(request):
 
         identifier = __makeIdentifier()
 
-        re['super_phone'] = re['phone']
-        re['most_phone'] = re['phone']
+        re['super_phone'] = int(data['phone'])
+        re['most_phone'] = int(data['phone'])
         re['user_id'] = identifier
         re['phone'] = int(identifier)
         re['create_time'] = common.currentTime()

@@ -1,7 +1,41 @@
 {%- extends "layout.html" %}
 {%- set page = 'board' %}
 {% block container %}
-<div>
-  <strong style="font-size: 20px;">今日</strong>
+<div id="board" style="display: flex; flex-direction: row;">
+  <div>
+    <h2 style="font-size: 20px;">今日</h2>
+    <h5>总收入：{[data.today_input.toFixed(2)]}</h5>
+    <h5>总提现：{[data.today_take.toFixed(2)]}</h5>
+  </div>
+  <div style="margin-left: 60px;">
+    <h2 style="font-size: 20px;">本月</h2>
+    <h5>总收入：{[data.month_input.toFixed(2)]}</h5>
+    <h5>总提现：{[data.month_take.toFixed(2)]}</h5>
+  </div>
+  <div style="margin-left: 60px;">
+    <h2 style="font-size: 20px;">所有</h2>
+    <h5>总收入：{[data.total_input.toFixed(2)]}</h5>
+    <h5>总提现：{[data.total_take.toFixed(2)]}</h5>
+  </div>
 </div>
+<script>
+  new Vue({
+    delimiters:['{[', ']}'],
+    el: '#board',
+    data: {
+      data: {}
+    },
+    created () {
+      this.fetchData()
+    },
+    methods: {
+      fetchData () {
+        const self = this
+        axios.get('/board-list').then(function (res) {
+          self.data = res.data   
+        })
+      }
+    }
+  })
+</script>
 {% endblock %}

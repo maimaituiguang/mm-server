@@ -245,6 +245,45 @@ def wallet_list():
 
     return json.dumps(result)
 
+def board():
+    white_list = ['15236657589', '17127122655', '13044744473', '18338911968']
+    yao = list(conn.db['yao_record'].find())
+    take = list(conn.db['take_record'].find({'status': 1}))
+    
+    
+    today_time = int(time.mktime(datetime.datetime.now().date().timetuple()))
+    month_time = int(time.mktime(datetime.date(datetime.date.today().year,datetime.date.today().month,1).timetuple()))
+
+    today_input = 0.0
+    month_input = 0.0
+    total_input = 0.0
+    today_take = 0.0
+    month_take = 0.0
+    total_take = 0.0
+    for item in yao:
+        if int(item['yao_phone']) in white_list:
+            continue
+
+        price = item['price'] / 0.05
+
+        if item['create_timestamp'] > today_time:
+            today_input += price
+        if item['create_timestamp'] > month_time:
+            month_input += price
+        total_input += price
+    
+    for item in take:
+        if int(item['phone']) in white_list:
+            continue
+
+        if item['create_time'] > today_time:
+            today_take += item['count']
+        if item['create_time'] > month_time:
+            month_take += item['count']
+        total_take += item['count']
+
+    return json.dumps({'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take, "month_take": month_take, 'total_take': total_take})
+
 
 def remark(phone, mark):
     acc = conn.db['account']
