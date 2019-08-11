@@ -23,9 +23,9 @@ def makeTask(platform, cou):
     app = conn.db['apps']
     task = conn.db['task']
 
-    last = task.find_one({'detail.platform': platform}, sort=[("end_time", -1)])
-    detail = last['detail']
-
+    max_one = task.find_one({'detail.platform': platform}, sort=[("end_time", -1), ('detail.index', -1)])
+    detail = max_one['detail']
+    
     if detail.has_key('index'):
         index = detail['index']
         total = app.count({'platform': platform})
