@@ -105,6 +105,12 @@ def banner():
     data = ['https://maimaituiguang.github.io/mm-web/images/banner5.png', 'https://maimaituiguang.github.io/mm-web/images/banner4.png']
     return __response(json.dumps({'data': data}))
 
+@app.route('/customer')
+def customer():
+    data = {'QQ': '2241294891'}
+    return __response(json.dumps(data))
+
+
 @app.route('/sub-account-list')
 def sub_account_list():
     return __response(json.dumps(query.sub_account_list(request)))
@@ -112,6 +118,7 @@ def sub_account_list():
 @app.route('/add-account')
 def add_account():
     return __response(json.dumps(query.add_account(request)))
+
 
 
 

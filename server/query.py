@@ -224,9 +224,12 @@ def create_account(super_phone, role=0):
     if len(accs) == 0:
         return {'success': False, 'message': '没有找到主账号，请联系客户！'}
 
+    yao_code = ''
     for item in accs:
         if item['role'] == 0:
             return {'success': False, 'message': u'ID 为 %s 的账号还未升级会员，不可再次创建子账号! ' % item['user_id']}
+        if item.has_key('most_phone'):
+            yao_code = item['user_id']
 
     dic = accs[0]
     identifier = __makeIdentifier()
@@ -234,6 +237,7 @@ def create_account(super_phone, role=0):
     dic['nick'] = '子账号 0%d' % len(accs)
     dic['phone'] = int(identifier)
     dic['user_id'] = identifier
+    dic['yao_code'] = yao_code
     dic['role'] = role
     dic['task_status'] = 0
     dic['account_status'] = 0
