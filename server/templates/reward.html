@@ -8,7 +8,7 @@
       <tr v-for="item in lists">
         <td>{[item.phone]}</td>
         <td>{[item.count]}</td>
-        <td>{[item.totals]}</td>
+        <td>{[item.totals.toFixed(2)]}</td>
         <td>
           卡号：{[item.card.number]}<br />
           银行：{[item.card.bank]}</br />
