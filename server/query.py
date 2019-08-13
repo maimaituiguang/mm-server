@@ -195,7 +195,6 @@ def client_login(request):
 
 def sub_account_list(request):
     phone = __parsePhone(__zc_0(request))
-    print phone
     accs = conn.db['account'].find({'super_phone': int(phone)}, {'_id': 0})
     members = conn.db['member'].find()
     mbs = {}
@@ -252,7 +251,7 @@ def create_account(super_phone, role=0):
         return {'success': False, 'message': '创建失败，请重试！'}
 
     wallet = conn.db['wallet']
-    w_dic = {'phone': dic['phone'], 'un_take': 0, 'has_take': 0.0, 'update_time': int(time.time())}
+    w_dic = {'phone': dic['phone'], 'un_take': 0.0, 'has_take': 0.0, 'update_time': int(time.time())}
     wallet.insert_one(w_dic)
 
     return {'success': True, 'message': dic}

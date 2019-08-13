@@ -40,7 +40,9 @@ if __name__ == '__main__':
     publish(3)
 
     # acc = conn.db['account']
-    # re = acc.find()
+    # wallet = conn.db['wallet']
+    # re = acc.find({'most_phone': {'$exists': False}})
     # for item in re:
-    #     acc.update_one({'_id': item['_id']}, {'$set': {'most_phone': item['super_phone']}})
-    #     print item['super_phone']
+    #     w_dic = {'phone': item['phone'], 'un_take': 0.0, 'has_take': 0.0, 'update_time': int(time.time())}
+    #     wallet.insert_one(w_dic)
+    #     print w_dic
