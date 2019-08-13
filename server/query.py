@@ -205,7 +205,7 @@ def sub_account_list(request):
     for item in accs:
         item['role_name'] = mbs[item['role']]['name']
         item['reward'] = mbs[item['role']]['reward']
-        item['account_status_name'] = '正常' if item['task_status'] == 0 else '禁任务'
+        item['account_status_name'] = '' if item['task_status'] == 0 else '禁任务'
         if item['account_status'] != 0:
             item['account_status_name'] = '封号'
         sub_list.append(item)
