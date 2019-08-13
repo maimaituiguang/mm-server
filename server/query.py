@@ -248,14 +248,14 @@ def create_account(super_phone, role=0):
     dic.pop('_id')
 
     re = acc.insert_one(dic)
-    if re and re.inserted_id:
-        dic.pop('_id')
-        return {'success': True, 'message': dic}
-    else:
+    if re is None or re.inserted_id is None:
         return {'success': False, 'message': '创建失败，请重试！'}
 
+    wallet = conn.db['wallet']
+    w_dic = {'phone': dic['phone'], 'un_take': 0, 'has_take': 0.0, 'update_time': int(time.time())}
+    wallet.insert_one(w_dic)
 
-
+    return {'success': True, 'message': dic}
 
 
 
