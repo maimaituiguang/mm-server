@@ -195,7 +195,6 @@ def client_login(request):
 
 def sub_account_list(request):
     phone = __parsePhone(__zc_0(request))
-    print phone
     accs = conn.db['account'].find({'super_phone': int(phone)}, {'_id': 0})
     members = conn.db['member'].find()
     mbs = {}
@@ -206,7 +205,7 @@ def sub_account_list(request):
     for item in accs:
         item['role_name'] = mbs[item['role']]['name']
         item['reward'] = mbs[item['role']]['reward']
-        item['account_status_name'] = '正常' if item['task_status'] == 0 else '禁任务'
+        item['account_status_name'] = '' if item['task_status'] == 0 else '禁任务'
         if item['account_status'] != 0:
             item['account_status_name'] = '封号'
         sub_list.append(item)
@@ -248,14 +247,14 @@ def create_account(super_phone, role=0):
     dic.pop('_id')
 
     re = acc.insert_one(dic)
-    if re and re.inserted_id:
-        dic.pop('_id')
-        return {'success': True, 'message': dic}
-    else:
+    if re is None or re.inserted_id is None:
         return {'success': False, 'message': '创建失败，请重试！'}
 
+    wallet = conn.db['wallet']
+    w_dic = {'phone': dic['phone'], 'un_take': 0.0, 'has_take': 0.0, 'update_time': int(time.time())}
+    wallet.insert_one(w_dic)
 
-
+    return {'success': True, 'message': dic}
 
 
 
