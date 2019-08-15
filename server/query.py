@@ -332,20 +332,22 @@ def view_task(req, status):
 
     re = f_task.find({'phone': phone, 'status': status}).limit(20)
     taskIds = []
-    rewards = {}
+    dic = {}
     tasks = list(re)
     for t in tasks:
         taskIds.append(t['task_id'])
-        rewards[str(t['task_id'])] = t['reward']
+        dic[str(t['task_id'])] = t
 
     task = conn.db['task']
     ref = task.find({'_id': {'$in': taskIds}})
     tasks = []
     for item in ref:
         item['_id'] = str(item['_id'])
-        item['reward'] = rewards[item['_id']]
+        item['reward'] = dic[item['_id']]['reward']
+        item['number'] = dic[item['_id']]['app_number']
+        item['password'] = dic[item['_id']]['app_password']
         tasks.append(item)
-
+    print tasks
     return json.dumps(tasks)
 
 
