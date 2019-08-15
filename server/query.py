@@ -339,7 +339,7 @@ def view_task(req, status):
         dic[str(t['task_id'])] = t
 
     task = conn.db['task']
-    ref = task.find({'_id': {'$in': taskIds}})
+    ref = task.find({'_id': {'$in': taskIds}}).sort('end_time', -1)
     tasks = []
     for item in ref:
         item['_id'] = str(item['_id'])
@@ -347,7 +347,7 @@ def view_task(req, status):
         item['number'] = dic[item['_id']]['app_number']
         item['password'] = dic[item['_id']]['app_password']
         tasks.append(item)
-    print tasks
+
     return json.dumps(tasks)
 
 
