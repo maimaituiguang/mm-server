@@ -390,7 +390,7 @@ def __makeIdentifier():
     import random
     str = ""
     for i in range(7):
-        ch = chr(random.randrange(ord('0'), ord('9') + 1))
+        ch = chr(random.randrange(ord('1'), ord('9') + 1))
         str += ch
 
     re = conn.db['account'].find_one({'user_id': str})
