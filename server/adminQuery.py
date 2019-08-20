@@ -248,7 +248,7 @@ def board():
     yao = list(conn.db['yao_record'].find())
     take = list(conn.db['take_record'].find({'status': 1}))
 
-    today_time = int(time.mktime(datetime.datetime.now().date().timetuple()))
+    today_time = int(time.mktime(datetime.datetime.now().date().timetuple())) - 3600 * 8
     month_time = int(time.mktime(datetime.date(datetime.date.today().year,datetime.date.today().month,1).timetuple()))
 
     today_input = 0.0
