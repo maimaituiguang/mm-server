@@ -3,7 +3,6 @@
 import conn, common
 import json, time, datetime
 from bson import ObjectId
-import query
 
 white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762', '18211948378']
 
