@@ -160,6 +160,7 @@ def task_pass(request):
 
     account = conn.db['account']
     ac = account.find_one({'phone': int(data['phone'])}, {'_id': 0, 'yao_code': 1})
+    yao_ac = None
     if ac is not None and ac.has_key('yao_code') and len(ac['yao_code']) > 0:
         yao_ac = account.find_one({'user_id': ac['yao_code']}, {'_id': 0, 'phone': 1, 'role': 1})
 
