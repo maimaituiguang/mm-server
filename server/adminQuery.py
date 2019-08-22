@@ -1,18 +1,27 @@
 # -*- coding: UTF-8 -*-
 
-import conn, common
-import json, time, datetime
+import datetime
+import json
+import time
+
 from bson import ObjectId
 
-white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762', '18211948378']
+import common
+import conn
+
+white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762',
+              '18211948378']
+
 
 def verify_user(phone, password):
     account = conn.db['account']
     try:
         re = account.find_one({'phone': int(phone)})
-        return re is not None and re.has_key('password') and re['password'] == common.md5(password) and re.has_key('super_member') and re['super_member'] == 1
+        return re is not None and re.has_key('password') and re['password'] == common.md5(password) and re.has_key(
+            'super_member') and re['super_member'] == 1
     except:
         return False
+
 
 def search(phone):
     # phone 参数的值可表示 userID 或 phone
@@ -40,6 +49,7 @@ def search(phone):
     except:
         return json.dumps([])
 
+
 def update_role(role, phone):
     try:
         account = conn.db['account']
@@ -50,10 +60,11 @@ def update_role(role, phone):
         if re.has_key('role'):
             old_role = int(re['role'])
 
-        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
-        # if int(role) == 4 and old_role == 0:
+        account.update_one({'phone': int(phone)}, {'$set': {'role': int(role), 'update_time': int(time.time())}})
+        # if (int(role) == 4 and old_role == 0) or int(role) == 10:
             # 送青铜
             # query.create_account(re['super_phone'], 1)
+
         #     送 298
         #     wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
 
@@ -79,24 +90,28 @@ def update_role(role, phone):
             role_phone = yao_user['phone']
             wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
-        conn.db['yao_record'].insert_one({'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime(), 'create_timestamp': int(time.time())})
+        conn.db['yao_record'].insert_one(
+            {'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime(),
+             'create_timestamp': int(time.time())})
 
         return search(phone)
     except:
         return json.dumps([])
-        
+
+
 def update_status(task_status, phone):
     try:
         account = conn.db['account']
-        account.update_one({'phone': int(phone)}, {'$set':{'task_status': int(task_status)}})
+        account.update_one({'phone': int(phone)}, {'$set': {'task_status': int(task_status)}})
         return json.dumps({'success': True})
     except:
         return json.dumps({'success': False})
 
+
 def update_account_status(account_status, phone):
     try:
         account = conn.db['account']
-        account.update_one({'phone': int(phone)}, {'$set':{'account_status': int(account_status)}})
+        account.update_one({'phone': int(phone)}, {'$set': {'account_status': int(account_status)}})
         return json.dumps({'success': True})
     except:
         return json.dumps({'success': False})
@@ -110,11 +125,11 @@ def finished_task(offset=0):
         phones = []
         for item in re:
             item['_id'] = str(item['_id'])
-            timeArray = datetime.datetime.utcfromtimestamp(item['create_time'] + 28800) 
+            timeArray = datetime.datetime.utcfromtimestamp(item['create_time'] + 28800)
             item['create_time'] = timeArray.strftime("%Y-%m-%d %H:%M:%S")
             lists.append(item)
             if item['phone'] in phones:
-              continue
+                continue
             phones.append(item['phone'])
 
         users = conn.db['account'].find({'phone': {'$in': phones}})
@@ -155,8 +170,6 @@ def task_pass(request):
     return json.dumps({'success': True})
 
 
-    
-
 def all_take(offset=0):
     wallet = conn.db['wallet']
     take = conn.db['take_record']
@@ -167,7 +180,7 @@ def all_take(offset=0):
     ttre = []
     for item in tt:
         item['_id'] = str(item['_id'])
-        timeArray = datetime.datetime.utcfromtimestamp(item['create_time'] + 28800) 
+        timeArray = datetime.datetime.utcfromtimestamp(item['create_time'] + 28800)
         item['create_time'] = timeArray.strftime("%Y-%m-%d %H:%M:%S")
         ttre.append(item)
         if item['phone'] in phones:
@@ -191,12 +204,11 @@ def all_take(offset=0):
 
 def take_finished(_id, status):
     take = conn.db['take_record']
-    re = take.update_one({'_id': ObjectId(_id)}, {'$set':{'status': status}})
+    re = take.update_one({'_id': ObjectId(_id)}, {'$set': {'status': status}})
     if re.modified_count == 1:
         return json.dumps({'success': True})
-    
-    return json.dumps({'success': False, 'info': '更新失败，请重试'})
 
+    return json.dumps({'success': False, 'info': '更新失败，请重试'})
 
 
 def wallet_list():
@@ -221,7 +233,7 @@ def wallet_list():
 
     are = account.find({'role': {'$gt': 0}}).sort('update_time', 1)
     account_result = list(are)
-    
+
     result = []
     for item_cnt in account_result:
         if str(item_cnt['phone']) in white_list:
@@ -243,12 +255,13 @@ def wallet_list():
 
     return json.dumps(result)
 
+
 def board():
     yao = list(conn.db['yao_record'].find())
     take = list(conn.db['take_record'].find({'status': 1}))
 
     today_time = int(time.mktime(datetime.datetime.now().date().timetuple())) - 3600 * 8
-    month_time = int(time.mktime(datetime.date(datetime.date.today().year,datetime.date.today().month,1).timetuple()))
+    month_time = int(time.mktime(datetime.date(datetime.date.today().year, datetime.date.today().month, 1).timetuple()))
 
     today_input = 0.0
     month_input = 0.0
@@ -267,7 +280,7 @@ def board():
         if item['create_timestamp'] > month_time:
             month_input += price
         total_input += price
-    
+
     for item in take:
         if str(item['phone']) in white_list:
             continue
@@ -278,11 +291,12 @@ def board():
             month_take += item['count']
         total_take += item['count']
 
-    return json.dumps({'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take, "month_take": month_take, 'total_take': total_take})
+    return json.dumps(
+        {'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take,
+         "month_take": month_take, 'total_take': total_take})
 
 
 def remark(phone, mark):
     acc = conn.db['account']
     acc.update_one({'phone': int(phone)}, {'$set': {'mark': mark}})
     return search(phone)
-    
