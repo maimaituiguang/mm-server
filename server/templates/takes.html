@@ -3,13 +3,10 @@
 {% block container %}
 <div id="takes">
     <div class="alert alert-warning alert-dismissible fade in" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-      <strong>提示：</strong>只显示未被封禁的账号信息，数据按总数统计。
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <strong>提示：</strong>只显示未被封禁的账号信息，数据按总数统计。<br />
+        <strong>提示：</strong>总投入为 「/」的，为赠送的青铜会员
     </div>
-    <!-- <div>
-        <h4>总投入：{[totalsInput.toFixed(2)]} &nbsp;&nbsp;&nbsp;&nbsp; 总收益：{[totalsReward.toFixed(2)]}</h4>
-        <br />
-    </div> -->
     <table class="table table-bordered" style="border-radius: 5px;">
         <thead><tr class="active"><th>姓名</th><th>手机号</th><th>总投入</th><th>百分比(收益/投入)</th><th>总收益</th><th>已提现</th><th>未提现</th></tr></thead>
         <tbody>
