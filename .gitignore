@@ -1,5 +1,5 @@
-./server/venv/
+server/venv/
 .idea/
-./server/.idea/
+server/.idea/
 *.pyc
-#./server/conn.py
+server/conn.py
