@@ -190,7 +190,7 @@ def client_login(request):
         return '账号或密码错误'
 
     if re['account_status'] != 0:
-        return '由于您严重违反了「麦麦推广」用户协议第 2.3 条，平台将永久封禁您的账号，如有疑问请联系客服 QQ：2241294891'
+        return '由于您严重违反了「麦麦推广」用户协议第 2.3 条，平台将永久封禁您的账号，如有疑问请联系客服 QQ：1467131226'
 
     vip = conn.db['member'].find_one({'type': re['role']})
     if vip is None:
