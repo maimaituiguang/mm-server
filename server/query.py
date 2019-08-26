@@ -1,8 +1,15 @@
 # -*- coding: UTF-8 -*-
 
-import conn, common
-import time, json, datetime
+import datetime
+import json
+import time
+import random
+
 from bson import ObjectId
+
+import common
+import conn
+
 
 def apps(offset):
     site = conn.db['apps']
@@ -68,6 +75,7 @@ def all_task(offset):
         list.append(item)
     return json.dumps(list)
 
+
 def submit_task(request):
     phone = __parsePhone(__zc_0(request))
 
@@ -97,6 +105,7 @@ def submit_task(request):
         return False
 
     return False
+
 
 def account(request):
     phone = __parsePhone(__zc_0(request))
@@ -175,7 +184,8 @@ def client_login(request):
     data = json.loads(request.get_data())
 
     account = conn.db['account']
-    re = account.find_one({'super_phone': int(data['phone']), 'password': common.md5(data['password']), 'most_phone': int(data['phone'])})
+    re = account.find_one(
+        {'super_phone': int(data['phone']), 'password': common.md5(data['password']), 'most_phone': int(data['phone'])})
     if re is None:
         return '账号或密码错误'
 
@@ -190,7 +200,6 @@ def client_login(request):
     re['reward'] = vip['reward']
     re['_id'] = str(re['_id'])
     return re
-
 
 
 def sub_account_list(request):
@@ -216,6 +225,7 @@ def sub_account_list(request):
 def add_account(request):
     phone = __parsePhone(__zc_0(request))
     return create_account(phone)
+
 
 def create_account(super_phone, role=0):
     acc = conn.db['account']
@@ -257,7 +267,6 @@ def create_account(super_phone, role=0):
     return {'success': True, 'message': dic}
 
 
-
 def wallet(request):
     phone = __parsePhone(__zc_0(request))
 
@@ -281,7 +290,7 @@ def take(request):
     dic = {'phone': phone, 'count': count, 'status': 0, 'create_time': int(time.time())}
     if acc.has_key('card'):
         dic['card'] = acc['card']
-    
+
     re = take.insert_one(dic)
 
     wallet = conn.db['wallet']
@@ -356,6 +365,7 @@ def members():
 
     return json.dumps(list(re))
 
+
 def update_account(req):
     phone = __parsePhone(__zc_0(req))
     account = conn.db['account']
@@ -377,9 +387,9 @@ def update_account(req):
     return re != None
 
 
-
 def __headers(req, key):
     return req.headers[key]
+
 
 def __zc_0(req):
     return __headers(req, 'zc_0')
@@ -388,17 +398,6 @@ def __zc_0(req):
 def __parsePhone(phone):
     return int(phone) / 12345
 
+
 def __makeIdentifier():
-    import random
-    str = ""
-    for i in range(7):
-        ch = chr(random.randrange(ord('0'), ord('9') + 1))
-        str += ch
-
-    re = conn.db['account'].find_one({'user_id': str})
-    if re is None:
-        return str
-    else:
-        return __makeIdentifier()
-
-
+    return str(int(time.time()))

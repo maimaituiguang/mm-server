@@ -5,7 +5,6 @@ import query
 import json
 from admin import admin_api
 
-
 app = Flask(__name__)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?R/LJDHCS/,/s'
 app.register_blueprint(admin_api)
@@ -13,7 +12,7 @@ app.register_blueprint(admin_api)
 @app.route('/account')
 def account():
     re = query.account(request)
-    if isinstance(re, dict) == False:
+    if not isinstance(re, dict):
         return __response(json.dumps({'success': False}))
 
     return __response(json.dumps({'success': True, 'data': re}))
@@ -28,6 +27,7 @@ def register():
 
     return __response(json.dumps({'success': False}))
 
+
 @app.route('/client-login', methods=['POST'])
 def client_login():
     if request.method == 'POST':
@@ -39,6 +39,7 @@ def client_login():
 
     return __response(json.dumps({'success': False}))
 
+
 @app.route('/apps/<int:offset>')
 def apps(offset):
     return __response(query.apps(offset))
@@ -47,6 +48,7 @@ def apps(offset):
 @app.route('/task')
 def task():
     return __response(query.task(request))
+
 
 @app.route('/submit-task', methods=['POST'])
 def submit_task():
@@ -62,6 +64,7 @@ def wallet():
         return __response(json.dumps({'success': True, 'data': re}))
 
     return __response(json.dumps({'success': False}))
+
 
 @app.route('/all-task/<int:offset>')
 def all_task(offset):
@@ -79,6 +82,7 @@ def take():
 def record():
     return __response(query.record(request))
 
+
 @app.route('/view-task/<int:status>')
 def view_task(status):
     return __response(query.view_task(request, status))
@@ -87,6 +91,7 @@ def view_task(status):
 @app.route('/members')
 def members():
     return __response(query.members())
+
 
 @app.route('/update-account', methods=['POST'])
 def update_account():
@@ -102,8 +107,10 @@ def message():
 
 @app.route('/banner')
 def banner():
-    data = ['https://maimaituiguang.github.io/mm-web/images/banner6.png','https://maimaituiguang.github.io/mm-web/images/banner5.png']
+    data = ['https://maimaituiguang.github.io/mm-web/images/banner4.png',
+        'https://maimaituiguang.github.io/mm-web/images/banner5.png']
     return __response(json.dumps({'data': data}))
+
 
 @app.route('/customer')
 def customer():
@@ -115,15 +122,15 @@ def customer():
 def sub_account_list():
     return __response(json.dumps(query.sub_account_list(request)))
 
+
 @app.route('/add-account')
 def add_account():
     return __response(json.dumps(query.add_account(request)))
 
 
-
-
 def __response(json):
     return Response(json, mimetype='application/json')
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

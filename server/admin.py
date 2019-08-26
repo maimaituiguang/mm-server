@@ -40,7 +40,6 @@ def login():
 def index():
     return render_template('board.html')
 
-@admin_api.route('/')
 @admin_api.route('/home')
 def home():
     return render_template('home.html')
