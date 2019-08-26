@@ -3,6 +3,7 @@
 import datetime
 import json
 import time
+import query
 
 from bson import ObjectId
 
@@ -60,11 +61,10 @@ def update_role(role, phone):
         if re.has_key('role'):
             old_role = int(re['role'])
 
-        account.update_one({'phone': int(phone)}, {'$set': {'role': int(role), 'update_time': int(time.time())}})
-        # if (int(role) == 4 and old_role == 0) or int(role) == 10:
+        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
+        if (int(role) == 4 and old_role == 0) or int(role) == 10:
             # 送青铜
-            # query.create_account(re['super_phone'], 1)
-
+            query.create_account(re['super_phone'], 1)
         #     送 298
         #     wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
 
