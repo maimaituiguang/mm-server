@@ -2,3 +2,4 @@
 .idea/
 ./server/.idea/
 *.pyc
+./server/conn.py
