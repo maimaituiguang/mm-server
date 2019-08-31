@@ -107,14 +107,14 @@ def message():
 
 @app.route('/banner')
 def banner():
-    data = ['https://maimaituiguang.github.io/mm-web/images/banner6.png',
-        'https://maimaituiguang.github.io/mm-web/images/banner5.png']
+    data = ['https://maimaituiguang.github.io/mm-web/images/banner7.png',
+        'https://maimaituiguang.github.io/mm-web/images/banner1.png']
     return __response(json.dumps({'data': data}))
 
 
 @app.route('/customer')
 def customer():
-    data = {'QQ': '2582985333 \n 2241294891'}
+    data = {'QQ': '2582985333 \n 1467131226'}
     return __response(json.dumps(data))
 
 
