@@ -51,6 +51,7 @@ def search(phone):
         return json.dumps([])
 
 
+# noinspection PyBroadException
 def update_role(role, phone):
     try:
         account = conn.db['account']
