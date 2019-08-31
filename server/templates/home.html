@@ -92,6 +92,9 @@ new Vue({
         },
 
         selectedMember(type, item) {
+            if (item.role == type) {
+                return
+            }
             const btn = $('#member'+item.user_id).button('loading')
             const self = this
             axios.get('/update-role/'+type+'/'+item.phone).then(function (res) {
