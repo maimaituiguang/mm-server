@@ -15,13 +15,23 @@
         </span>
     </div>
     <table class="table table-bordered" style="border-radius: 5px;">
-        <thead><tr class="active"><th>昵称</th><th>手机号</th><th>ID</th><th>角色</th><th style="width: 200px;">备注</th><th style="width: 300px;">操作</th></tr></thead>
+        <thead><tr class="active"><th>昵称</th><th>手机号</th><th>ID</th><th>角色</th><th style="width: 200px;">备注</th><th>操作</th></tr></thead>
         <tbody>
            <tr v-for="item in lists">
                <td>{[item.nick]}</td>
                <td>{[item.super_phone]}</td>
                <td>{[item.user_id]}</td>
-               <td>{[item.role_name]}</td>
+               <td>
+                   <div class="btn-group" role="group">
+                        <button :id="'member'+item.user_id" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {[item.role_name.substr(0,4)]}
+                        <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li v-for="m in members"  @click="selectedMember(m.type, item)"><a href="#">{[m.name]}</a></li>
+                        </ul>
+                    </div>
+               </td>
                <td class="input-group">
                     <input :id="'remark-input-'+item.user_id" type="text" class="form-control" placeholder="备注信息" :value="item.mark"/>
                     <span class="input-group-btn">
@@ -31,15 +41,6 @@
                <td>
                     <button :id="'task'+item.user_id" @click="task(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.task_status == 0 ? '禁止任务': '开放任务']}</button> &nbsp;
                     <button :id="'account'+item.user_id" @click="account(item)" type="button" data-loading-text="更新中..." class="btn btn-danger">{[item.account_status == 0 ? '封号': '解封']}</button> &nbsp;
-                    <div class="btn-group" role="group">
-                        <button id="'member'+item.user_id" type="button" data-loading-text="更新中..." class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        升级会员
-                        <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li v-for="m in members"  @click="selectedMember(m.type, item)"><a href="#">{[m.name]}</a></li>
-                        </ul>
-                    </div>
                </td>
            </tr>
         </tbody>
@@ -95,8 +96,18 @@ new Vue({
             const self = this
             axios.get('/update-role/'+type+'/'+item.phone).then(function (res) {
                 btn.button('reset')
-                self.lists.pop(item)
-                self.lists.push(...res.data)
+                if (res.data.success == '1') {
+                    var items = self.lists
+                    self.lists = []
+                    setTimeout(() => {
+                        item.role = type
+                        member = self.members.filter(mm => mm.type == type)[0]
+                        item.role_name = member.name
+                        self.lists = items
+                    }, 1);
+                } else {
+                    alert('更新失败')
+                }
             })
         },
 
@@ -106,11 +117,13 @@ new Vue({
             status = parseInt(item.task_status) ? 0 : 1
             // console.log(item.task_status)
             axios.get('/update-status/'+status+'/'+item.phone).then(function (res) {
-                self.lists.pop(item)
+                btn.button('reset')
                 if (res.data.success == '1') {
+                    var items = self.lists
+                    self.lists = []
                     setTimeout(() => {
                         item.task_status = status
-                        self.lists.push(item)
+                        self.lists = items
                     }, 1);
                 } else {
                     alert('更新失败')
@@ -124,11 +137,13 @@ new Vue({
             status = parseInt(item.account_status) ? 0 : 1
             // console.log(item.account_status)
             axios.get('/update-account-status/'+status+'/'+item.phone).then(function (res) {
-                self.lists.pop(item)
+                btn.button('reset')
                 if (res.data.success == '1') {
+                    var items = self.lists
+                    self.lists = []
                     setTimeout(() => {
                         item.account_status = status
-                        self.lists.push(item)
+                        self.lists = items
                     }, 1);
                 } else {
                     alert('更新失败')

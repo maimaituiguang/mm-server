@@ -98,9 +98,9 @@ def update_role(role, phone):
             {'phone': int(role_phone), 'yao_phone': int(phone), 'price': price, 'create_time': common.currentTime(),
              'create_timestamp': int(time.time())})
 
-        return search(phone)
+        return json.dumps({'success': True})
     except:
-        return json.dumps([])
+        return json.dumps({'success': False})
 
 
 def update_status(task_status, phone):
@@ -296,9 +296,10 @@ def board():
             month_take += item['count']
         total_take += item['count']
 
-    return json.dumps(
+    j = json.dumps(
         {'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take,
          "month_take": month_take, 'total_take': total_take})
+    return j
 
 
 def remark(phone, mark):
