@@ -57,6 +57,7 @@ def update_role(role, phone):
         wallet = conn.db['wallet']
 
         re = account.find_one({'phone': int(phone)})
+        most_phone = re.get('most_phone')
         old_role = 0
         if re.has_key('role'):
             old_role = int(re['role'])
@@ -82,11 +83,13 @@ def update_role(role, phone):
         price = (new_price - old_price) * 5.0 / 100.0
 
         yao_user = None
+        yao_most_phone = 0
         if re.has_key('yao_code'):
             yao_user = account.find_one({'user_id': re['yao_code']})
+            yao_most_phone = yao_user.get('most_phone')
 
         role_phone = "0"
-        if yao_user is not None and yao_user.has_key('phone'):
+        if yao_user is not None and yao_user.has_key('phone') and yao_most_phone != most_phone:
             role_phone = yao_user['phone']
             wallet.update_one({'phone': int(role_phone)}, {'$inc': {'un_take': price}})
 
