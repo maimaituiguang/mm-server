@@ -114,7 +114,7 @@ def banner():
 
 @app.route('/customer')
 def customer():
-    data = {'QQ': '2582985333 \n 1467131226'}
+    data = {'QQ': '2582985333\n1467131226'}
     return __response(json.dumps(data))
 
 
