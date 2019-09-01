@@ -11,7 +11,7 @@ import common
 import conn
 
 white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762',
-              '18211948378', '1567259100', '1898921']
+              '18211948378', '1567259100', '1898921', '1567331819']
 
 
 def verify_user(phone, password):
@@ -68,7 +68,8 @@ def update_role(role, phone):
         account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
         if (int(role) == 4 and old_role == 0) or int(role) == 10:
             # 送青铜
-            query.create_account(re['super_phone'], 1)
+            sub = query.create_account(most_phone, 1)
+            print sub
         #     送 298
         #     wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
 

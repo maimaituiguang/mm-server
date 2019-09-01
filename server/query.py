@@ -235,7 +235,7 @@ def create_account(super_phone, role=0):
 
     yao_code = ''
     for item in accs:
-        if item['role'] == 0:
+        if item['role'] == 0 and role == 0:
             return {'success': False, 'message': u'ID 为 %s 的账号还未升级会员，不可再次创建子账号! ' % item['user_id']}
         if item.has_key('most_phone'):
             yao_code = item['user_id']
