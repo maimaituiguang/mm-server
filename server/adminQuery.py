@@ -20,7 +20,8 @@ def verify_user(phone, password):
         re = account.find_one({'phone': int(phone)})
         return re is not None and re.has_key('password') and re['password'] == common.md5(password) and re.has_key(
             'super_member') and re['super_member'] == 1
-    except:
+    except Exception as e:
+        print e
         return False
 
 
@@ -47,7 +48,8 @@ def search(phone):
                 maccs.append(item)
                 break
         return json.dumps(maccs)
-    except:
+    except Exception as e:
+        print e
         return json.dumps([])
 
 
@@ -87,7 +89,8 @@ def update_role(role, phone):
         yao_most_phone = 0
         if re.has_key('yao_code'):
             yao_user = account.find_one({'user_id': re['yao_code']})
-            yao_most_phone = yao_user.get('super_phone')
+            if yao_user is not None:
+                yao_most_phone = yao_user.get('super_phone')
 
         role_phone = "0"
         if yao_user is not None and yao_user.has_key('phone') and yao_most_phone != most_phone:
@@ -99,7 +102,8 @@ def update_role(role, phone):
              'create_timestamp': int(time.time())})
 
         return json.dumps({'success': True})
-    except:
+    except Exception as e:
+        print e
         return json.dumps({'success': False})
 
 
@@ -108,7 +112,8 @@ def update_status(task_status, phone):
         account = conn.db['account']
         account.update_one({'phone': int(phone)}, {'$set': {'task_status': int(task_status)}})
         return json.dumps({'success': True})
-    except:
+    except Exception as e:
+        print e
         return json.dumps({'success': False})
 
 
@@ -117,7 +122,8 @@ def update_account_status(account_status, phone):
         account = conn.db['account']
         account.update_one({'phone': int(phone)}, {'$set': {'account_status': int(account_status)}})
         return json.dumps({'success': True})
-    except:
+    except Exception as e:
+        print e
         return json.dumps({'success': False})
 
 
@@ -143,7 +149,8 @@ def finished_task(offset=0):
                     ta['mark'] = us['mark']
 
         return json.dumps(lists)
-    except:
+    except Exception as e:
+        print e
         return json.dumps([])
 
 
