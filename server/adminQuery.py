@@ -21,7 +21,7 @@ def verify_user(phone, password):
         return re is not None and re.has_key('password') and re['password'] == common.md5(password) and re.has_key(
             'super_member') and re['super_member'] == 1
     except Exception as e:
-        print e
+        print(e)
         return False
 
 
@@ -49,7 +49,7 @@ def search(phone):
                 break
         return json.dumps(maccs)
     except Exception as e:
-        print e
+        print(e)
         return json.dumps([])
 
 
@@ -104,7 +104,7 @@ def update_role(role, phone):
 
         return json.dumps({'success': True})
     except Exception as e:
-        print e
+        print(e)
         return json.dumps({'success': False})
 
 
@@ -114,7 +114,7 @@ def update_status(task_status, phone):
         account.update_one({'phone': int(phone)}, {'$set': {'task_status': int(task_status)}})
         return json.dumps({'success': True})
     except Exception as e:
-        print e
+        print(e)
         return json.dumps({'success': False})
 
 
@@ -124,7 +124,7 @@ def update_account_status(account_status, phone):
         account.update_one({'phone': int(phone)}, {'$set': {'account_status': int(account_status)}})
         return json.dumps({'success': True})
     except Exception as e:
-        print e
+        print(e)
         return json.dumps({'success': False})
 
 
@@ -151,7 +151,7 @@ def finished_task(offset=0):
 
         return json.dumps(lists)
     except Exception as e:
-        print e
+        print(e)
         return json.dumps([])
 
 

@@ -107,8 +107,7 @@ def message():
 
 @app.route('/banner')
 def banner():
-    data = ['https://maimaituiguang.github.io/mm-web/images/banner7.png',
-        'https://maimaituiguang.github.io/mm-web/images/banner1.png']
+    data = ['https://maimaituiguang.github.io/mm-web/images/banner1.png']
     return __response(json.dumps({'data': data}))
 
 
