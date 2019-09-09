@@ -384,22 +384,23 @@ def update_account(req):
         dic['card'] = data['card']
 
     re = account.update_one({'phone': phone}, {'$set': dic})
-    return re != None
+    return re is not None
 
 
 def append_sub_password(req):
     data = json.loads(req.get_data())
     sub_account = data.get_key('sub_account')
     sub_most_password = data.get_key('sub_most_password')
+
     if sub_account is None or sub_most_password is None:
         return {'success': False, 'message': '内容不能为空'}
 
     update = {'sub_most_password': sub_most_password}
-    if data.has_key('sub_password'):
+    if 'sub_password' in data:
         update['sub_password'] = data.get_key('sub_password')
 
-    conn.db['account'].update_one({'phone': sub_account}, {'$set': update})
-    return {'success': True, 'message': '设置成功'}
+    re = conn.db['account'].update_one({'phone': sub_account}, {'$set': update})
+    return {'success': re is not None, 'message': '设置成功'}
 
 
 def __headers(req, key):
