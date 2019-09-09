@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify
 import query
 import json
 from admin import admin_api
@@ -125,6 +125,11 @@ def sub_account_list():
 @app.route('/add-account')
 def add_account():
     return __response(json.dumps(query.add_account(request)))
+
+
+@app.route('/append_sub_password')
+def append_sub_password():
+    return __response(jsonify(query.append_sub_password(request)))
 
 
 def __response(json):
