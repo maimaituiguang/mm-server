@@ -3,3 +3,4 @@ server/venv/
 server/.idea/
 *.pyc
 server/conn.py
+.python-version

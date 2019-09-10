@@ -305,8 +305,8 @@ def board():
         total_take += item['count']
 
     j = json.dumps(
-        {'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take,
-         "month_take": month_take, 'total_take': total_take})
+        {'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take * 0.98,
+         "month_take": month_take * 0.98, 'total_take': total_take * 0.98})
     return j
 
 
