@@ -235,7 +235,7 @@ def create_account(super_phone, role=0):
 
     yao_code = ''
     for item in accs:
-        if item['role'] == 0 and role == 0:
+        if item['role'] == 0 and role == 0 and item.has_key('most_phone') is False:
             return {'success': False, 'message': u'ID 为 %s 的账号还未升级会员，不可再次创建子账号! ' % item['user_id']}
         if item.has_key('most_phone'):
             yao_code = item['user_id']
@@ -389,16 +389,15 @@ def update_account(req):
 
 def append_sub_password(req):
     data = json.loads(req.get_data())
-    sub_account = data.get_key('sub_account')
-    sub_most_password = data.get_key('sub_most_password')
+    print data
+    sub_account = data.get('sub_account')
+    sub_most_password = data.get('sub_most_password')
+    sub_password = data.get('sub_password')
 
-    if sub_account is None or sub_most_password is None:
+    if sub_account is None or sub_most_password is None or sub_password is None:
         return {'success': False, 'message': '内容不能为空'}
 
-    update = {'sub_most_password': sub_most_password}
-    if 'sub_password' in data:
-        update['sub_password'] = data.get_key('sub_password')
-
+    update = {'sub_most_password': sub_most_password, 'sub_password': sub_password}
     re = conn.db['account'].update_one({'phone': sub_account}, {'$set': update})
     return {'success': re is not None, 'message': '设置成功'}
 
