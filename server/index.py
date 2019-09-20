@@ -128,10 +128,9 @@ def add_account():
     return __response(json.dumps(query.add_account(request)))
 
 
-@app.route('/append_sub_password')
+@app.route('/append_sub_password', methods=['POST'])
 def append_sub_password():
-    return __response(jsonify(query.append_sub_password(request)))
-
+    return jsonify(query.append_sub_password(request))
 
 def __response(json):
     return Response(json, mimetype='application/json')
