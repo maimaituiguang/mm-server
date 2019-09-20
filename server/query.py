@@ -389,7 +389,6 @@ def update_account(req):
 
 def append_sub_password(req):
     data = json.loads(req.get_data())
-    print data
     sub_account = data.get('sub_account')
     sub_most_password = data.get('sub_most_password')
     sub_password = data.get('sub_password')

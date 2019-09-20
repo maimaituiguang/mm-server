@@ -10,10 +10,6 @@ from bson import ObjectId
 import common
 import conn
 
-white_list = ['15236657589', '17127122655', '13044744473', '18338911968', '1485533', '6927671', '7444668', '7678762',
-              '18211948378', '1567259100', '1898921', '1567331819', '9993052', '1567255037']
-
-
 def verify_user(phone, password):
     account = conn.db['account']
     try:
@@ -65,7 +61,7 @@ def update_role(role, phone):
         if re.has_key('role'):
             old_role = int(re['role'])
 
-        account.update_one({'phone': int(phone)}, {'$set':{'role': int(role), 'update_time': int(time.time())}})
+        account.update_one({'phone': int(phone)}, {'$set': {'role': int(role), 'update_time': int(time.time())}})
         # if (int(role) == 4 and old_role == 0) or int(role) == 10:
             # 送青铜
             # sub = query.create_account(most_phone, 1)
@@ -244,11 +240,14 @@ def wallet_list():
             record_dic[phone] = record_dic[phone] + cord['price']
             continue
 
-    are = account.find({'role': {'$gt': 0}}).sort('update_time', 1)
-    account_result = list(are)
+    phones = list(conn.db['account'].find({"mark": {"$regex": "mmtg"}}, {'_id': 0, 'phone': 1}))
+    white_list = []
+    for item in phones:
+        white_list.append(str(item.get('phone')))
 
+    are = list(account.find({'role': {'$gt': 0}}).sort('update_time', 1))
     result = []
-    for item_cnt in account_result:
+    for item_cnt in are:
         if str(item_cnt['phone']) in white_list:
             continue
         for item in re:
@@ -272,6 +271,11 @@ def wallet_list():
 def board():
     yao = list(conn.db['yao_record'].find())
     take = list(conn.db['take_record'].find({'status': 1}))
+
+    acc = list(conn.db['account'].find({"mark": {"$regex": "mmtg"}}, {'_id': 0, 'phone': 1}))
+    white_list = []
+    for item in acc:
+        white_list.append(str(item.get('phone')))
 
     today_time = int(time.mktime(datetime.datetime.now().date().timetuple())) - 3600 * 8
     month_time = int(time.mktime(datetime.date(datetime.date.today().year, datetime.date.today().month, 1).timetuple()))
@@ -305,8 +309,8 @@ def board():
         total_take += item['count']
 
     j = json.dumps(
-        {'today_input': today_input, 'month_input': month_input, 'total_input': total_input, 'today_take': today_take * 0.98,
-         "month_take": month_take * 0.98, 'total_take': total_take * 0.98})
+        {'today_input': today_input, 'month_input': month_input, 'total_input': total_input,
+         'today_take': today_take * 0.98, "month_take": month_take * 0.98, 'total_take': total_take * 0.98})
     return j
 
 
