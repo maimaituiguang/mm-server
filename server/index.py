@@ -127,7 +127,7 @@ def sub_account_list():
 
 @app.route('/add-account')
 def add_account():
-    return __response(json.dumps(query.add_account(request)))
+    return jsonify(query.add_account(request))
 
 
 @app.route('/append_sub_password', methods=['POST'])

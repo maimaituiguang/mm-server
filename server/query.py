@@ -229,7 +229,7 @@ def add_account(request):
 
 def create_account(super_phone, role=0):
     acc = conn.db['account']
-    accs = list(acc.find({'super_phone': int(super_phone)}))
+    accs = list(acc.find({'super_phone': int(super_phone)}, {'_id': 0}))
     if len(accs) == 0:
         return {'success': False, 'message': '没有找到主账号，请联系客户！'}
 
@@ -254,13 +254,10 @@ def create_account(super_phone, role=0):
 
     dic.pop('most_phone')
     dic.pop('password')
-    dic.pop('_id')
 
     re = acc.insert_one(dic)
     if re is None or re.inserted_id is None:
         info = {'success': False, 'message': '创建失败，请重试！'}
-        print(re.inserted_id)
-        print(info)
         return info
 
     wallet = conn.db['wallet']
