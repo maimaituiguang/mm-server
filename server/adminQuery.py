@@ -62,12 +62,13 @@ def update_role(role, phone):
             old_role = int(re['role'])
 
         account.update_one({'phone': int(phone)}, {'$set': {'role': int(role), 'update_time': int(time.time())}})
-        # if (int(role) == 4 and old_role == 0) or int(role) == 10:
+        if (int(role) == 4 and old_role == 0) or int(role) == 10:
+            # 送 298
+            wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
             # 送青铜
             # sub = query.create_account(most_phone, 1)
             # print sub
-        #     送 298
-        #     wallet.update_one({'phone': int(phone)}, {'$inc': {'un_take': 298.0}})
+        
 
         ms = conn.db['member'].find({})
         old_price = 0
