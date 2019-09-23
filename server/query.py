@@ -264,6 +264,7 @@ def create_account(super_phone, role=0):
     w_dic = {'phone': dic['phone'], 'un_take': 0.0, 'has_take': 0.0, 'update_time': int(time.time())}
     wallet.insert_one(w_dic)
 
+    dic.pop('_id')
     return {'success': True, 'message': dic}
 
 
