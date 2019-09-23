@@ -235,7 +235,7 @@ def create_account(super_phone, role=0):
 
     yao_code = ''
     for item in accs:
-        if item['role'] == 0 and role == 0 and item.has_key('most_phone') is False:
+        if item.get('role') == 0 and role == 0 and 'most_phone' not in item:
             return {'success': False, 'message': u'ID 为 %s 的账号还未升级会员，不可再次创建子账号! ' % item['user_id']}
         if 'most_phone' in item and item['role'] == 10:
             yao_code = item['user_id']
@@ -258,7 +258,10 @@ def create_account(super_phone, role=0):
 
     re = acc.insert_one(dic)
     if re is None or re.inserted_id is None:
-        return {'success': False, 'message': '创建失败，请重试！'}
+        info = {'success': False, 'message': '创建失败，请重试！'}
+        print(re.inserted_id)
+        print(info)
+        return info
 
     wallet = conn.db['wallet']
     w_dic = {'phone': dic['phone'], 'un_take': 0.0, 'has_take': 0.0, 'update_time': int(time.time())}
