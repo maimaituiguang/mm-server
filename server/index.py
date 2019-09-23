@@ -109,7 +109,7 @@ def message():
 @app.route('/banner')
 def banner():
     data = ['https://maimaituiguang.github.io/mm-web/images/banner8.png', 
-    'https://maimaituiguang.github.io/mm-web/images/banner2.png', 
+    'https://maimaituiguang.github.io/mm-web/images/banner3.png',
     'https://maimaituiguang.github.io/mm-web/images/banner1.png']
     return __response(json.dumps({'data': data}))
 
@@ -127,7 +127,7 @@ def sub_account_list():
 
 @app.route('/add-account')
 def add_account():
-    return jsonify(query.add_account(request))
+    return __response(json.dumps(query.add_account(request)))
 
 
 @app.route('/append_sub_password', methods=['POST'])
